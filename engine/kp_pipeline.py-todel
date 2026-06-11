@@ -1,0 +1,40 @@
+def generate_kp_grid(charts):
+
+    kp = {}
+
+    for house, planets in charts["lagna"].items():
+        for p in planets:
+
+            if p == "Asc":
+                continue
+
+            kp[p] = {
+                "house": house,
+                "sign": get_sign_from_house(int(house)),
+                "star_lord": "Jupiter",   # placeholder
+                "sub_lord": "Saturn"      # placeholder
+            }
+
+    return kp
+
+
+def generate_sutra_grid(charts, kp_grid):
+
+    sutra = {}
+
+    for p, d in kp_grid.items():
+
+        sutra[p] = [
+            d["house"],
+            d["sign"],         # sign lord placeholder
+            d["star_lord"],
+            d["sub_lord"]
+        ]
+
+    return sutra
+
+
+def get_sign_from_house(h):
+    signs = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo",
+             "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
+    return signs[(h-1)%12]

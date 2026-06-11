@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>SutraJyotish</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eee;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .menu button {
+            margin-left: 10px;
+            padding: 6px 12px;
+            cursor: pointer;
+            border: 1px solid #999;
+            background: white;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        input,
+        textarea {
+            margin: 5px;
+            padding: 5px;
+        }
+
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .active {
+            display: block;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .chart-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+            background: white;
+        }
+
+        .chart-container {
+            width: 540px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 115px);
+            gap: 2px;
+        }
+
+        .box {
+            border: 1px solid black;
+            background: #fafafa;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            padding-top: 8px;
+            line-height: 1.25;
+            min-height: 105px;
+            white-space: pre-line;
+            overflow-wrap: break-word;
+            overflow: visible;
+        }
+
+        .title-center {
+            text-align: center;
+        }
+
+       .top-menu {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.menu-btn {
+    padding: 8px 14px;
+    cursor: pointer;
+    border: 1px solid #999;
+    background: white;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.menu-btn:hover {
+    background: #f0f0f0;
+}
+
+        .nav-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons button {
+            padding: 8px 14px;
+            border: 1px solid #999;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+
+    
+
+        .current-dasa-box {
+
+            background: #1f2937;
+
+            color: white;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+        }
+
+        .maha-box {
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            padding: 10px;
+
+            margin-bottom: 15px;
+
+            background: #f9fafb;
+        }
+
+        .bhukti-box {
+
+            margin-left: 20px;
+
+            margin-top: 10px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            padding: 10px;
+
+            background: white;
+        }
+
+        summary {
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+    
+
+        @media (max-width: 768px) {
+
+            .chart-container {
+
+                width: 100%;
+                grid-template-rows: repeat(4, 90px);
+            }
+
+            .box {
+
+                font-size: 12px;
+                min-height: 80px;
+            }
+
+            table {
+
+                font-size: 12px;
+            }
+        }
+
+
+    </style>
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const tz = Intl.DateTimeFormat()
+                    .resolvedOptions()
+                    .timeZone;
+
+                const tz1 = document.getElementById(
+                    "timezone"
+                );
+
+                const tz2 = document.getElementById(
+                    "horary_timezone"
+                );
+
+                if (tz1) {
+
+                    for (let option of tz1.options) {
+
+                        if (option.value === tz) {
+                            option.selected = true;
+                        }
+                    }
+                }
+
+                if (tz2) {
+
+                    for (let option of tz2.options) {
+
+                        if (option.value === tz) {
+                            option.selected = true;
+                        }
+                    }
+                }
+            }
+        );
+
+
+        function showSection(id) {
+
+            let sections =
+                document.getElementsByClassName("section");
+
+            for (let s of sections) {
+
+                s.classList.remove("active");
+            }
+
+            document
+                .getElementById(id)
+                .classList
+                .add("active");
+        }
+        
+        function resetPage() {
+
+          window.location.href = "/"
+           }
+           
+        
+        function refreshModule(moduleName) {
+
+            if (moduleName === "natal") {
+
+                window.location.href = "/";
+
+            }
+
+            else if (moduleName === "horary") {
+
+                window.location.href = "/";
+
+            }
+
+            else if (moduleName === "sutracard") {
+
+                window.location.href = "/sutracard";
+
+            }
+
+            else if (moduleName === "numero") {
+
+                window.location.href = "/numerology";
+            }
+        }
+
+
+        function toggleMode() {
+
+            let mode = document.querySelector(
+                'input[name="mode"]:checked'
+            ).value;
+
+            let natal =
+                document.getElementById(
+                    "natalFields"
+                );
+
+            let horary =
+                document.getElementById(
+                    "horaryFields"
+                );
+
+            if (mode === "natal") {
+
+                natal.style.display = "block";
+
+                horary.style.display = "none";
+
+            } else {
+
+                natal.style.display = "none";
+
+                horary.style.display = "block";
+            }
+        }
+
+    </script>
+
+
+<link rel="stylesheet" href="/static/css/transit.css">
+</head>
+
+<body>
+
+    <div class="header">
+
+    <div class="brand">
+        SutraJyotish
+    </div>
+
+    <div class="top-menu">
+
+        <a href="/">
+            <button class="menu-btn">
+                Charts
+            </button>
+        </a>
+
+        <a href="/numerology">
+            <button class="menu-btn">
+                Numerology
+            </button>
+        </a>
+
+        <a href="/sutracard">
+            <button class="menu-btn">
+                SutraCard
+            </button>
+        </a>
+
+       {% if lagna_chart %}
+
+      <a href="/workspace">
+
+            <button class="menu-btn">
+
+                SutraJyotish Workspace
+
+            </button>
+
+      </a>
+
+     {% endif %}
+
+    </div>
+
+    </div>
+
+    <div class="container">
+
+        <!-- FORM -->
+
+        <form method="POST" action="/generate">
+
+            <h3>Mode</h3>
+
+            <label>
+
+                <input
+                    type="radio"
+                    name="mode"
+                    value="natal"
+                    checked
+                    onclick="toggleMode()"
+                >
+
+                Natal Chart
+
+            </label>
+
+            <label style="margin-left:20px;">
+
+                <input
+                    type="radio"
+                    name="mode"
+                    value="horary"
+                    onclick="toggleMode()"
+                >
+
+                KP Horary / Prashna
+
+            </label>
+
+            <br><br>
+
+            <!-- NATAL -->
+
+            <div id="natalFields">
+
+                DOB:
+
+                <input
+                    type="text"
+                    name="dob"
+                    placeholder="DD-MM-YYYY"
+                >
+
+                TOB:
+
+                <input
+                    type="text"
+                    name="tob"
+                    placeholder="HH:MM"
+                >
+
+                <br>
+
+                Place:
+
+                <input
+                    type="text"
+                    name="place"
+                    placeholder="e.g. Muzaffarpur"
+                >
+
+                <br>
+
+                Lat:
+
+               <input
+                  type="number"
+                  step="any"
+                  name="lat"
+                  id="lat"
+                  value="{{ lat }}"
+                >
+                Lon:
+
+                <input
+                   type="number"
+                   step="any"
+                   name="lon"
+                   id="lon"
+                   value="{{ lon }}"
+                >
+                <br><br>
+
+                Timezone:
+
+                <select
+                    id="timezone"
+                    name="timezone"
+                    
+                >
+
+                    <option value="">
+                        Select Timezone
+                    </option>
+
+                    <option value="Asia/Kolkata">
+                        Asia/Kolkata (IST)
+                    </option>
+
+                    <option value="Asia/Dubai">
+                        Asia/Dubai
+                    </option>
+
+                    <option value="Asia/Singapore">
+                        Asia/Singapore
+                    </option>
+
+                    <option value="Asia/Tokyo">
+                        Asia/Tokyo
+                    </option>
+
+                    <option value="Europe/London">
+                        Europe/London
+                    </option>
+
+                    <option value="Europe/Paris">
+                        Europe/Paris
+                    </option>
+
+                    <option value="America/New_York">
+                        America/New_York
+                    </option>
+
+                    <option value="America/Chicago">
+                        America/Chicago
+                    </option>
+
+                    <option value="America/Denver">
+                        America/Denver
+                    </option>
+
+                    <option value="America/Los_Angeles">
+                        America/Los_Angeles
+                    </option>
+
+                    <option value="Australia/Sydney">
+                        Australia/Sydney
+                    </option>
+
+                </select>
+
+
+            </div>
+
+           <!-- HORARY -->
+
+<div
+    id="horaryFields"
+    style="display:none;"
+>
+
+    <h3>
+        KP Horary / Prashna
+    </h3>
+
+    <!-- QUESTION -->
+
+    <label>
+        Question:
+    </label>
+
+    <br>
+
+    <textarea
+        name="question"
+        rows="4"
+        style="
+            width:100%;
+            margin-top:10px;
+        "
+        placeholder="
+Ask your question...
+Example:
+Will I get job?
+When marriage?
+Will business succeed?
+        "
+    ></textarea>
+
+    <br><br>
+
+    <!-- DOB -->
+
+    <label>
+        DOB:
+    </label>
+
+    <input
+        type="text"
+        name="horary_dob"
+        placeholder="DD-MM-YYYY"
+    >
+
+    <br><br>
+
+    <!-- TIME -->
+
+    <label>
+        Time:
+    </label>
+
+    <input
+        type="text"
+        name="horary_time"
+    >
+
+    <br><br>
+
+    <!-- HORARY NUMBER -->
+
+    <label>
+        Horary Number:
+    </label>
+
+    <input
+        type="number"
+        name="horary_number"
+        min="1"
+        max="249"
+        style="
+            width:120px;
+            padding:8px;
+            font-size:18px;
+            text-align:center;
+        "
+    >
+
+    <br><br>
+
+    <!-- PLACE -->
+
+    
+<label>
+        Place:
+    </label>
+
+    <input
+        type="text"
+        name="horary_place"
+        placeholder="e.g. Muzaffarpur"
+    >
+
+    <br><br>
+
+    <label>
+        Timezone:
+    </label>
+
+    <select
+        id="horary_timezone"
+        name="horary_timezone"
+        
+    >
+
+        <option value="">
+            Select Timezone
+        </option>
+
+        <option value="Asia/Kolkata">
+            Asia/Kolkata (IST)
+        </option>
+
+        <option value="Asia/Dubai">
+            Asia/Dubai
+        </option>
+
+        <option value="Asia/Singapore">
+            Asia/Singapore
+        </option>
+
+        <option value="Asia/Tokyo">
+            Asia/Tokyo
+        </option>
+
+        <option value="Europe/London">
+            Europe/London
+        </option>
+
+        <option value="Europe/Paris">
+            Europe/Paris
+        </option>
+
+        <option value="America/New_York">
+            America/New_York
+        </option>
+
+        <option value="America/Chicago">
+            America/Chicago
+        </option>
+
+        <option value="America/Denver">
+            America/Denver
+        </option>
+
+        <option value="America/Los_Angeles">
+            America/Los_Angeles
+        </option>
+
+        <option value="Australia/Sydney">
+            Australia/Sydney
+        </option>
+
+    </select>
+
+
+
+    <button
+        type="button"
+        onclick="refreshModule('horary')"
+    >
+        Refresh Horary
+    </button>
+
+
+</div>
+            <br><br>
+
+            <button type="submit">
+
+                Generate
+
+            </button>
+
+            <button
+                type="button"
+                onclick="window.location.href='/'"
+            >
+                Refresh
+            </button>
+
+        </form>
+
+
+        <div class="nav-buttons">
+
+            <button type="button" onclick="showSection('charts')">
+                Charts
+            </button>
+
+            <button type="button" onclick="showSection('kp')">
+                KP Grid
+            </button>
+
+            <button type="button" onclick="showSection('planets')">
+                Planets
+            </button>
+
+            <button type="button" onclick="showSection('cusps')">
+                Cusps
+            </button>
+
+            <button type="button" onclick="showSection('kp249')">
+                KP 249
+            </button>
+
+            <button type="button" onclick="showSection('dasa')">
+                Dasa
+            </button>
+            
+            <button type="button"
+                     
+            <button
+               type="button"
+                onclick="showTransitSection()"
+            >
+                Transit
+            </button>
+         </div>
+
+
+        <!-- ERROR -->
+
+        {% if error %}
+
+        <p style="color:red; font-weight:bold;">
+
+            {{ error }}
+
+        </p>
+
+        {% endif %}
+
+        <!-- CHARTS -->
+
+        <div id="charts" class="section active">
+
+            {% set signs = [
+            "",
+            "Aries",
+            "Taurus",
+            "Gemini",
+            "Cancer",
+            "Leo",
+            "Virgo",
+            "Libra",
+            "Scorpio",
+            "Sagittarius",
+            "Capricorn",
+            "Aquarius",
+            "Pisces"
+            ] %}
+
+            {% if horary_result %}
+
+            <div class="chart-box">
+
+                <h2 class="title-center">
+                    KP Horary Result
+                </h2>
+
+                <p>
+
+                    <b>Question:</b>
+
+                    {{ horary_result.question }}
+
+                </p>
+
+                <p>
+
+                    <b>Horary Number:</b>
+
+                    {{ horary_result.number }}
+
+                </p>
+
+                <p>
+
+                    <b>Prashna Lagna:</b>
+
+                    {{ horary_result.sign }}
+
+                </p>
+
+                <p>
+
+                    <b>Degree:</b>
+
+                    {{ horary_result.degree }}
+
+                </p>
+
+            </div>
+
+            {% endif %}
+
+            {% if lagna_chart %}
+
+            <div class="chart-box">
+
+                <h3 class="title-center">
+
+                    Lagna Chart
+
+                    (Asc: {{ signs[asc_sign] }})
+
+                </h3>
+
+                <div class="chart-container">
+
+                    {% for row in lagna_chart %}
+
+                        {% for cell in row %}
+
+                            <div class="box">
+
+                                {{ cell | replace('\n', '<br>') | safe }}
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% if bhav_chart %}
+
+            <div class="chart-box">
+
+                <h3 class="title-center">
+                    Bhav Chalit Chart
+                </h3>
+
+                <div class="chart-container">
+
+                    <div class="box">12 {{ bhav_chart.get(12, [])|join(" ") }}</div>
+                    <div class="box">1 {{ bhav_chart.get(1, [])|join(" ") }}</div>
+                    <div class="box">2 {{ bhav_chart.get(2, [])|join(" ") }}</div>
+                    <div class="box">3 {{ bhav_chart.get(3, [])|join(" ") }}</div>
+
+                    <div class="box">11 {{ bhav_chart.get(11, [])|join(" ") }}</div>
+                    <div class="box"></div>
+                    <div class="box"></div>
+                    <div class="box">4 {{ bhav_chart.get(4, [])|join(" ") }}</div>
+
+                    <div class="box">10 {{ bhav_chart.get(10, [])|join(" ") }}</div>
+                    <div class="box"></div>
+                    <div class="box"></div>
+                    <div class="box">5 {{ bhav_chart.get(5, [])|join(" ") }}</div>
+
+                    <div class="box">9 {{ bhav_chart.get(9, [])|join(" ") }}</div>
+                    <div class="box">8 {{ bhav_chart.get(8, [])|join(" ") }}</div>
+                    <div class="box">7 {{ bhav_chart.get(7, [])|join(" ") }}</div>
+                    <div class="box">6 {{ bhav_chart.get(6, [])|join(" ") }}</div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- KP GRID -->
+
+        <div id="kp" class="section">
+
+            {% if kp_grid %}
+
+            <h3>Sutrajyotish Grid</h3>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Planet</th>
+                        <th>Planet Houses</th>
+                        <th>Star Lord</th>
+                        <th>Star Houses</th>
+                        <th>Sub Lord</th>
+                        <th>Sub Houses</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in kp_grid %}
+
+                    <tr>
+
+                        <td>{{ row["planet"] }}</td>
+
+                        <td>{{ row["planet_houses"] }}</td>
+
+                        <td>{{ row["star_lord"] }}</td>
+
+                        <td>{{ row["star_houses"] }}</td>
+
+                        <td>{{ row["sub_lord"] }}</td>
+
+                        <td>{{ row["sub_houses"] }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+        <!-- PLANETS -->
+
+        <div id="planets" class="section">
+
+            {% if planets %}
+
+            <h3>Planetary Positions</h3>
+
+            <table>
+
+                <tr>
+
+                    <th>Planet</th>
+                    <th>Sign</th>
+                    <th>Degree</th>
+                    <th>Sign Degree</th>
+                    <th>Nakshatra</th>
+                    <th>Sub</th>
+
+                </tr>
+
+                {% for p in planets %}
+
+                <tr>
+
+                    <td>{{ p.planet }}</td>
+
+                    <td>{{ p.sign }}</td>
+
+                    <td>{{ p.degree }}</td>
+
+                    <td>{{ p.sign_degree }}</td>
+
+                    <td>{{ p.nak }}</td>
+
+                    <td>{{ p.sub }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+        <!-- CUSPS -->
+
+        <div id="cusps" class="section">
+
+            {% if cusps %}
+
+            <h3>Cuspal Houses</h3>
+
+            <table>
+
+                <tr>
+
+                    <th>House</th>
+                    <th>Degree</th>
+                    <th>Sign</th>
+                    <th>Sign Degree</th>
+                    <th>Nakshatra</th>
+                    <th>Sub Lord</th>
+
+                </tr>
+
+                {% for c in cusps %}
+
+                <tr>
+
+                    <td>{{ c.house }}</td>
+
+                    <td>{{ c.degree }}</td>
+
+                    <td>{{ c.sign }}</td>
+
+                    <td>{{ c.sign_degree }}</td>
+
+                    <td>{{ c.nak }}</td>
+
+                    <td>{{ c.sub }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+        <!-- KP249 -->
+
+        <div id="kp249" class="section">
+
+            {% if kp_249 %}
+
+            <h3>KP 249 Sub-Lord Table</h3>
+
+            <table>
+
+                <tr>
+
+                   <th>S.No</th>
+
+                   <th>Sign Lord</th>
+
+                   <th>Nak. Lord</th>
+
+                   <th>Sub Lord</th>
+
+                   <th>Start DMS</th>
+
+                   <th>End DMS</th>
+
+              </tr>
+
+                {% for row in kp_249 %}
+
+             <tr>
+
+                <td>{{ row.serial }}</td>
+
+                <td>{{ row.sign_lord }}</td>
+
+                <td>{{ row.nak_lord }}</td>
+
+                <td>{{ row.sub_lord }}</td>
+
+                <td>{{ row.start_dms }}</td>
+
+                <td>{{ row.end_dms }}</td>
+
+            </tr>
+
+             {% endfor %}
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+      <!-- ===================================== -->
+<!-- VIMSHOTTARI DASA NAVIGATOR -->
+<!-- ===================================== -->
+
+<div id="dasa" class="section">
+
+    <h2>
+        Vimshottari Dasa Navigator
+    </h2>
+
+    {% if current_dasa %}
+
+    <div class="current-dasa-box">
+
+        <b>Current Running:</b>
+
+        {{ current_dasa.maha }}
+        →
+        {{ current_dasa.antar }}
+        →
+        {{ current_dasa.pratyantar }}
+
+        <br><br>
+
+        {{ current_dasa.start }}
+        →
+        {{ current_dasa.end }}
+
+    </div>
+
+    {% endif %}
+
+    <!-- ================================= -->
+    <!-- MAHADASAS -->
+    <!-- ================================= -->
+
+    {% if dasa_tree %}
+
+    {% for maha in dasa_tree %}
+
+    <details class="maha-box">
+
+        <summary>
+
+            <b>
+                {{ maha.lord }}
+                Mahadasa
+            </b>
+
+            |
+            {{ maha.start.strftime("%d-%m-%Y") }}
+
+            →
+
+            {{ maha.end.strftime("%d-%m-%Y") }}
+
+        </summary>
+
+        <!-- ============================= -->
+        <!-- BHUKTIS -->
+        <!-- ============================= -->
+
+        {% for bhukti in maha.bhukti %}
+
+        <details class="bhukti-box">
+
+            <summary>
+
+                {{ bhukti.lord }}
+                Bhukti
+
+                |
+                {{ bhukti.start.strftime("%d-%m-%Y") }}
+
+                →
+
+                {{ bhukti.end.strftime("%d-%m-%Y") }}
+
+            </summary>
+
+            <!-- ========================= -->
+            <!-- ANTARS -->
+            <!-- ========================= -->
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Antar
+                        </th>
+
+                        <th>
+                            Start
+                        </th>
+
+                        <th>
+                            End
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for antar in bhukti.antar %}
+
+                    <tr>
+
+                        <td>
+                            {{ antar.lord }}
+                        </td>
+
+                        <td>
+                            {{ antar.start.strftime("%d-%m-%Y %H:%M") }}
+                        </td>
+
+                        <td>
+                            {{ antar.end.strftime("%d-%m-%Y %H:%M") }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </details>
+
+        <br>
+
+        {% endfor %}
+
+    </details>
+
+    <br>
+
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+<!-- ===================================== -->
+<!-- TRANSIT SECTION -->
+<!-- ===================================== -->
+
+    <div
+      id="transit"
+      class="section"
+      style="display:none;"
+    >
+
+    <div class="transit-main">
+
+        <!-- LEFT CHART -->
+        <div class="chart-section">
+
+            <div id="transitChart"></div>
+
+            <div class="transit-footer">
+
+                <div id="transitDateTime"></div>
+
+                <div id="runningDasa"></div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-section">
+
+            <div class="table-panel">
+
+                <div class="panel-title">
+                    Current Planet Position
+                </div>
+
+                <table id="transitTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>Planet</th>
+                            <th>Sign</th>
+                            <th>Degree</th>
+                            <th>Lord</th>
+                            <th>STL</th>
+                            <th>SL</th>
+                            <th>SSL</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="table-panel">
+
+                <div class="panel-title">
+                    Planet Position At Birth Time
+                </div>
+
+                <table id="natalTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>Planet</th>
+                            <th>Sign</th>
+                            <th>Degree</th>
+                            <th>Lord</th>
+                            <th>STL</th>
+                            <th>SL</th>
+                            <th>SSL</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="bottom-options">
+
+                <select>
+                    <option>
+                        North Indian
+                    </option>
+                </select>
+
+                <select>
+                    <option>
+                        Asc Chart
+                    </option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTON PANEL -->
+        <div class="button-panel">
+
+            <button onclick="setFast()">
+                Fast
+            </button>
+
+            <button onclick="setSlow()">
+                Slow
+            </button>
+
+            <button onclick="stopTransit()">
+                End
+            </button>
+
+            <button onclick="reverseTransit()">
+                Reverse
+            </button>
+
+            <button onclick="stepForward()">
+                Forward
+            </button>
+
+            <button onclick="stepBackward()">
+                Backward
+            </button>
+
+            <button onclick="startTransit()">
+                Start
+            </button>
+
+            <button onclick="pauseTransit()">
+                Pause
+            </button>
+
+            <button onclick="replayTransit()">
+                Replay
+            </button>
+
+            <button onclick="setRealtime()">
+                Real Time
+            </button>
+
+            <button onclick="setTransitMode('hour')">
+                Hourly
+            </button>
+
+            <button onclick="setTransitMode('day')">
+                Daily
+            </button>
+
+            <button onclick="setTransitMode('week')">
+                Weekly
+            </button>
+
+            <button onclick="setTransitMode('month')">
+                Monthly
+            </button>
+
+            <button onclick="setTransitMode('year')">
+                Yearly
+            </button>
+
+           <button
+             onclick="setTransitDate()"
+           >
+              Set Date
+         </button>
+       </div>
+      <div class="time-tool">
+
+    <div class="time-title">
+        Time Tool
+    </div>
+
+    <div class="time-row">
+        <span>1 Day</span>
+
+        <button onclick="adjustBirthTime(86400)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-86400)">
+            -
+        </button>
+    </div>
+
+    <div class="time-row">
+        <span>1 Hour</span>
+
+        <button onclick="adjustBirthTime(3600)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-3600)">
+            -
+        </button>
+    </div>
+    <div class="time-row">
+        <span>10 Minute</span>
+
+        <button onclick="adjustBirthTime(600)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-600)">
+            -
+        </button>
+    </div>
+
+    <div class="time-row">
+        <span>1 Minute</span>
+
+        <button onclick="adjustBirthTime(60)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-60)">
+            -
+        </button>
+    </div>
+    <div class="time-row">
+        <span>10 Second</span>
+
+        <button onclick="adjustBirthTime(10)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-10)">
+            -
+        </button>
+    </div>
+
+    <div class="time-row">
+        <span>1 Second</span>
+
+        <button onclick="adjustBirthTime(1)">
+            +
+        </button>
+
+        <button onclick="adjustBirthTime(-1)">
+            -
+        </button>
+    </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/chart.js"></script>
+ <script>
+
+function showTransitSection() {
+
+    // =========================
+    // HIDE ALL SECTIONS
+    // =========================
+
+    document.querySelectorAll(
+        ".section"
+    ).forEach(sec => {
+
+        sec.style.display = "none";
+    });
+
+    // =========================
+    // SHOW TRANSIT
+    // =========================
+
+    const transit =
+        document.getElementById(
+            "transit"
+        );
+
+    if (transit) {
+
+       transit.style.display =
+         "block";
+
+       transit.classList.add(
+         "active"
+      );
+    }
+
+    // =========================
+    // AUTO LOAD TRANSIT
+    // =========================
+
+    if (
+        typeof loadTransitData ===
+        "function"
+    ) {
+
+        loadTransitData();
+    }
+}
+
+</script>
+</body>
+
+</html>

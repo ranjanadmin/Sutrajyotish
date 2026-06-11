@@ -1,0 +1,11 @@
+
+# ==============================
+# PALMISTRY ROUTE
+# ==============================
+
+@app.route("/palmistry")
+def palmistry():
+
+    return render_template(
+        "palmistry.html"
+    )

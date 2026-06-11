@@ -1,0 +1,50 @@
+body {
+  background: #ffffff;
+  font-family: "Times New Roman", serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.page {
+  max-width: 1100px;
+  margin: auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 5px;
+}
+
+/* TABLE */
+
+.kp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.kp-table th,
+.kp-table td {
+  border: 1px solid #000;
+  padding: 6px;
+  text-align: center;
+}
+
+.kp-table th {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+/* PRINT FRIENDLY */
+
+@media print {
+  body {
+    padding: 0;
+  }
+
+  h2 {
+    border: none;
+  }
+}

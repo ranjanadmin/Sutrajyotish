@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   SutraJyotish Transit Workspace
+  </title>
+  <link href="/static/css/transit.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="transit-header">
+   <span class="software-name">
+    SUTRAJYOTISH
+   </span>
+   <span id="birthDetailsHeader">
+    DOB : Loading... | TOB : Loading... | POB : Loading...
+   </span>
+  </div>
+  <div class="transit-main">
+   <div class="chart-section">
+    <div id="transitChart">
+    </div>
+    <div class="transit-footer">
+     <div id="transitDateTime">
+     </div>
+     <div id="transitDasaStatus">
+     </div>
+    </div>
+   </div>
+   <div class="right-section">
+    <div class="table-panel">
+     <div class="panel-title">
+      Current Planet Position
+     </div>
+     <div id="transitTable">
+     </div>
+    </div>
+    <div class="table-panel">
+     <div class="panel-title">
+      Planet Position At Birth Time
+     </div>
+     <div id="natalTable">
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="/static/js/transit_chart.js">
+  </script>
+  <script>
+   window.addEventListener('DOMContentLoaded',function(){if(window.loadTransitData){loadTransitData();}});
+  </script>
+ </body>
+</html>

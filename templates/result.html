@@ -1,0 +1,134 @@
+<h2>Ascendant: {{charts.ascendant}}</h2>
+
+<!-- PLANETS -->
+<h3>Planetary Positions</h3>
+
+<table border="1" cellpadding="6" cellspacing="0">
+
+    <tr>
+        <th>Planet</th>
+        <th>Sign</th>
+        <th>Degree</th>
+        <th>Nakshatra</th>
+        <th>Sub</th>
+        <th>House</th>
+    </tr>
+
+    {% for p in charts.planets %}
+
+    <tr>
+
+        <td>{{ p.planet }}</td>
+
+        <td>{{ p.sign }}</td>
+
+        <td>{{ p.degree }}</td>
+
+        <td>{{ p.nak }}</td>
+
+        <td>{{ p.sub }}</td>
+
+        <td>{{ charts.planet_houses[p.planet] }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+<!-- LAGNA CHART -->
+<h3>North Indian Chart</h3>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(4,1fr);
+width:300px;
+height:300px;
+border:2px solid black;
+">
+
+{% for i in range(1,13) %}
+<div style="border:1px solid #999; font-size:12px;">
+<b>{{i}}</b><br>
+{{charts.lagna_chart[i|string]}}
+</div>
+{% endfor %}
+
+</div>
+
+<!-- BHAV CHALIT -->
+<h3>Bhav Chalit</h3>
+<table>
+{% for h,v in charts.bhav_chart.items() %}
+<tr>
+<td><b>{{h}}</b></td>
+<td>{{v}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- KP GRID -->
+<h3>KP Grid</h3>
+<table>
+<tr>
+<th>Planet</th>
+<th>House</th>
+<th>Star</th>
+<th>Sub</th>
+<th>Significations</th>
+</tr>
+
+{% for p,v in kp.items() %}
+<tr>
+<td>{{p}}</td>
+<td>{{v.house}}</td>
+<td>{{v.star_lord}}</td>
+<td>{{v.sub_lord}}</td>
+<td>
+{% for h in v.houses %}
+<span style="
+color:
+{% if h in ['2','6','10','11'] %}green
+{% elif h in ['5','8','12'] %}red
+{% else %}black{% endif %}
+;">
+{{h}}
+</span>
+{% endfor %}
+</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- SUTRA GRID -->
+<h3>Sutra Grid</h3>
+<table>
+<tr>
+<th>Planet</th>
+<th>Houses</th>
+<th>Strength</th>
+</tr>
+
+{% for p,v in sutra.items() %}
+<tr>
+<td>{{p}}</td>
+<td>{{v.houses}}</td>
+<td>{{v.strength}}</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- DASHA -->
+<h3>Dasha</h3>
+<p>Mahadasha: {{dasha.mahadasha}}</p>
+<p>Antardasha: {{dasha.antardasha}}</p>
+<p>{{dasha.interpretation}}</p>
+
+<!-- SCORE -->
+<h3>Job vs Loss Analysis</h3>
+<p style="color:green;">Job Score: {{score.job_score}}</p>
+<p style="color:red;">Loss Score: {{score.loss_score}}</p>
+<h2>{{score.result}}</h2>
+
+<!-- FINAL PREDICTION -->
+<h3>Final Prediction</h3>
+<p>{{prediction}}</p>

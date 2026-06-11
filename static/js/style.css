@@ -1,0 +1,88 @@
+/* ===============================
+   GLOBAL
+=============================== */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 20px;
+    color: #333;
+}
+
+/* ===============================
+   HEADINGS
+=============================== */
+h2 {
+    color: #2c3e50;
+}
+
+/* ===============================
+   BUTTON
+=============================== */
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+/* ===============================
+   DASHA TREE
+=============================== */
+.node {
+    margin-left: 20px;
+}
+
+.box {
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.box:hover {
+    background: #eef6ff;
+}
+
+/* ===============================
+   LEVEL COLORS
+=============================== */
+.md .box {
+    border-left: 5px solid #e67e22;
+    font-weight: bold;
+}
+
+.ad .box {
+    border-left: 5px solid #3498db;
+}
+
+.pd .box {
+    border-left: 5px solid #2ecc71;
+}
+
+/* ===============================
+   HIDDEN CHILDREN
+=============================== */
+.hidden {
+    display: none;
+}
+
+/* ===============================
+   TIMELINE
+=============================== */
+#timeline {
+    margin-top: 40px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}

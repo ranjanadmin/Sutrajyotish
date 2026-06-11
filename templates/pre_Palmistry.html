@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PalmSutra PRO</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+                           filename='css/palmistry.css') }}">
+
+    <style>
+        /* existing inline CSS here */
+    </style>
+<style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial;
+            background: #0b1c2c;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: none;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: #0d2438;
+            padding: 10px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+        }
+
+        button {
+            background: #1e2a38;
+            color: white;
+            border: 1px solid #3a4a5a;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        button.active {
+            background: #00bcd4;
+            color: black;
+        }
+
+        canvas {
+
+        display:block;
+
+        width:100%;
+
+        height:700px;
+
+        background:black;
+}
+
+     .canvas-wrapper {
+
+       flex: 1;
+
+       min-height: 700px;
+
+       height: 700px;
+
+       position: relative;
+
+       background: #000;
+
+       border-top: 1px solid #345;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+<div class="header">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+    ">
+
+        <button
+            onclick="window.location.href='/'"
+            style="
+                background:#1e2a38;
+                color:white;
+                border:1px solid #3a4a5a;
+                padding:6px 12px;
+                cursor:pointer;
+            "
+        >
+            ← Back to Landing Page
+        </button>
+
+        <div style="
+            font-size:22px;
+            font-weight:bold;
+        ">
+            PalmSutra PRO
+        </div>
+
+        <button
+            onclick="window.print()"
+            style="
+                background:#1e2a38;
+                color:white;
+                border:1px solid #3a4a5a;
+                padding:6px 12px;
+                cursor:pointer;
+            "
+        >
+            🖨 Print
+        </button>
+
+    </div>
+
+</div>
+
+<div class="topbar">
+
+   <button onclick="setSymbol('star')">★ Star</button>
+   <button onclick="setSymbol('cross')">✝ Cross</button>
+   <button onclick="setSymbol('triangle')">△ Triangle</button>
+   <button onclick="setSymbol('square')">□ Square</button>
+   <button onclick="setSymbol('island')">◉ Island</button>
+   <button onclick="setSymbol('fish')">🐟 Fish</button>
+   <button onclick="setSymbol('trident')">🔱 Trident</button>
+
+</div>
+
+<div class="canvas-wrapper">
+    <canvas id="canvas"></canvas>
+</div>
+
+ <label
+        style="
+          display:inline-block;
+          padding:8px 12px;
+          background:#1e2a38;
+          border:1px solid #3a4a5a;
+          cursor:pointer;
+    ">
+       📷 Load Palm Image
+       <input
+         id="palmUpload"
+         type="file"
+         accept="image/*"
+         onchange="loadPalmImage(event)"
+         style="display:none">
+        
+ </label>
+    <button onclick="setMode('life')">Life</button>
+    <button onclick="setMode('fate')">Fate</button>
+    <button onclick="setMode('head')">Brain</button>
+    <button onclick="setMode('heart')">Heart</button>
+    <button onclick="setMode('sun')">Sun</button>
+    <button onclick="toggleAgeAxis()">
+       Age Axis
+    </button>
+    <button onclick="setLifeAnchor()">
+      Life Calibration
+    </button>
+
+    <button id="dotBtn" onclick="toggleDotMode()">Dot</button>
+
+    <button id="enhanceBtn" onclick="toggleEnhance()">Enhance Brush</button>
+
+    Strength 
+    <input type="range" min="1" max="3" step="0.1" value="1.5"
+        onchange="enhanceStrength=this.value">
+
+    <button onclick="enhanceFull()">Enhance Full</button>
+    <button onclick="palmLineMode()">
+        Palm Line Mode
+    </button>
+
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">−</button>
+    <button id="panBtn">Pan</button>
+
+    <button onclick="undoLast()">Undo</button>
+    <button onclick="clearCanvas()">Reset</button>
+</div>
+
+
+<div class="topbar" style="background:#12283d;border-top:1px solid #345;padding:10px;">
+<button onclick="switchPalm('left')">Left Palm</button>
+<button onclick="switchPalm('right')">Right Palm</button>
+<button onclick="saveSession()">Save Session</button>
+<button onclick="loadSession()">Load Session</button>
+<button onclick="exportSession()">Export JSON</button>
+<input type="file" id="importFile" onchange="importSession(event)">
+<button onclick="generateReport()">Generate Report</button>
+</div>
+
+<div style="display:flex;gap:10px;padding:10px;flex-wrap:wrap;color:white;">
+<div style="flex:1;min-width:280px;background:#102438;padding:10px;">
+<h3>Mount Analysis</h3>
+Jupiter <input id="m_jupiter" type="number" min="1" max="10"><br>
+Saturn <input id="m_saturn" type="number" min="1" max="10"><br>
+Sun <input id="m_sun" type="number" min="1" max="10"><br>
+Mercury <input id="m_mercury" type="number" min="1" max="10"><br>
+Mars <input id="m_mars" type="number" min="1" max="10"><br>
+Moon <input id="m_moon" type="number" min="1" max="10"><br>
+Venus <input id="m_venus" type="number" min="1" max="10"><br>
+</div>
+
+<div style="flex:1;min-width:280px;background:#102438;padding:10px;">
+<h3>Notes</h3>
+<textarea id="notes" style="width:100%;height:120px;"></textarea>
+<textarea id="report"
+          rows="15"
+          style="width:100%">
+</textarea>
+</div>
+</div>
+
+<div id="reportPanel" style="display:none;background:white;color:black;padding:15px;margin:10px;">
+<h2>PalmSutra Report</h2>
+<div id="reportContent"></div>
+</div>
+
+
+</div>
+
+<script>
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+let img = new Image();
+
+let mode = "";
+let dotMode = false;
+
+let currentPalm='left';
+let showAgeAxis=false;
+// ================= LIFE FAN =================
+
+let lifeFanMode = false;
+
+let lifeFanAnchor = null;
+
+const lifeFanRays = [
+
+    { age:30, angle:35 },
+
+    { age:50, angle:50 },
+
+    { age:62.5, angle:65 },
+
+    { age:75, angle:80 }
+
+];
+
+let enhanceMode=false;
+
+let enhanceStrength = 1.5;
+
+let imgScale = 1, imgX = 0, imgY = 0;
+const MAX_ZOOM = 10;
+const MIN_ZOOM = 0.15;
+let drawing = false;
+let traceMode = false;
+let panMode = false;
+let isPanning = false;
+let startPanX = 0;
+let startPanY = 0;
+document
+.getElementById("panBtn")
+.onclick = function(){
+
+    panMode = !panMode;
+
+    this.classList.toggle("active");
+};
+canvas.addEventListener(
+    "mouseleave",
+    ()=> {
+        isPanning=false;
+        drawing=false;
+    }
+);
+canvas.addEventListener(
+    "mousedown",
+    function(e){
+
+        if(!panMode || enhanceMode) return;
+
+        isPanning = true;
+
+        startPanX = e.clientX;
+        startPanY = e.clientY;
+    }
+);
+
+canvas.addEventListener(
+    "mousemove",
+    function(e){
+
+        if(!isPanning) return;
+
+        imgX += e.clientX - startPanX;
+        imgY += e.clientY - startPanY;
+
+        startPanX = e.clientX;
+        startPanY = e.clientY;
+
+        redraw();
+    }
+);
+
+canvas.addEventListener(
+    "mouseup",
+    ()=> isPanning=false
+);
+// DATA
+let lifeLinePoints = [];
+let fateLinePoints = [];
+let headLinePoints = [];
+let heartLinePoints = [];
+let sunLinePoints = [];
+let symbols = [];
+let currentSymbol = null;
+let symbolMode = false;
+
+function palmLineMode(){
+
+    let imgData =
+        ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    let d = imgData.data;
+
+    for(let i=0;i<d.length;i+=4){
+
+        let avg =
+            (d[i]+d[i+1]+d[i+2])/3;
+
+        let contrast = 2.8;
+        d[i]   = avg+(d[i]-avg)*contrast;
+        d[i+1] = avg+(d[i+1]-avg)*contrast;
+        d[i+2] = avg+(d[i+2]-avg)*contrast;
+
+        d[i]   = Math.max(0,Math.min(255,d[i]));
+        d[i+1] = Math.max(0,Math.min(255,d[i+1]));
+        d[i+2] = Math.max(0,Math.min(255,d[i+2]));
+    }
+
+    ctx.putImageData(imgData,0,0);
+}
+// ================= RESIZE =================
+function resizeCanvas(){
+
+    const dpr = window.devicePixelRatio || 1;
+
+    const w = canvas.parentElement.clientWidth;
+    const h = canvas.parentElement.clientHeight;
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr,dpr);
+
+    redraw();
+}
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+// ================= LOAD =================
+function loadPalmImage(e){
+    alert("loadPalmImage called");
+    let reader = new FileReader();
+    reader.onload = function(ev){
+     alert("FileReader loaded");
+        img.onload = function(){
+         alert("Image loaded");
+        console.log(
+         "Canvas Size:",
+        canvas.clientWidth,
+        canvas.clientHeight
+   );
+
+    console.log(
+       "Image Size:",
+        img.width,
+        img.height
+    );
+    alert("Palm loaded successfully"); 
+            let viewW = canvas.clientWidth;
+            let viewH = canvas.clientHeight;
+
+            let scaleX = viewW / img.width;
+            let scaleY = viewH / img.height;
+            imgScale = Math.min(scaleX, scaleY);
+
+            imgX = (viewW - img.width*imgScale)/2;
+            imgY = (viewH - img.height*imgScale)/2;
+
+            redraw();
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+}
+
+// ================= MODE =================
+ function setSymbol(sym){
+
+     currentSymbol = sym;
+
+     symbolMode = true;
+
+     dotMode = false;
+     traceMode = false;
+     enhanceMode = false;
+
+     alert(
+        "Click on palm to place " +
+        sym
+    );
+ }
+function setMode(m){
+
+    mode = m;
+
+    dotMode = false;
+    traceMode = true;
+
+    enhanceMode = false;
+    panMode = false;
+    document
+        .getElementById("panBtn")
+        .classList.remove("active");
+
+    document
+        .getElementById("enhanceBtn")
+        .classList.remove("active");
+}
+function toggleDotMode(){
+    dotMode = !dotMode;
+    enhanceMode = false;
+    dotBtn.classList.toggle("active");
+    enhanceBtn.classList.remove("active");
+}
+
+function toggleEnhance(){
+    enhanceMode = !enhanceMode;
+    dotMode = false;
+    enhanceBtn.classList.toggle("active");
+    dotBtn.classList.remove("active");
+}
+
+// ================= CLICK =================
+canvas.onclick = function(e){
+
+    if(lifeFanMode){
+
+        let rect =
+            canvas.getBoundingClientRect();
+
+        lifeFanAnchor = {
+
+            x:e.clientX - rect.left,
+
+            y:e.clientY - rect.top
+
+        };
+
+        lifeFanMode = false;
+
+        redraw();
+
+        return;
+    }
+
+    if(dotMode){
+
+        let rect =
+            canvas.getBoundingClientRect();
+
+        let p = {
+
+            x:(e.clientX-rect.left-imgX)/imgScale,
+
+            y:(e.clientY-rect.top-imgY)/imgScale
+        };
+
+        getArray().push(p);
+
+        redraw();
+    }
+};
+
+canvas.onmousedown = function(e){
+
+    if(symbolMode){
+
+        let rect =
+            canvas.getBoundingClientRect();
+
+        symbols.push({
+
+            type: currentSymbol,
+
+            x:(e.clientX-rect.left-imgX)/imgScale,
+
+            y:(e.clientY-rect.top-imgY)/imgScale,
+
+            palm: currentPalm
+        });
+
+        symbolMode = false;
+
+        redraw();
+
+        return;
+    }
+
+    if(enhanceMode){
+
+        drawing = true;
+        return;
+    }
+
+    if(traceMode){
+
+        drawing = true;
+        addTracePoint(e);
+    }
+};
+
+   
+canvas.onmouseup = ()=> drawing=false;
+
+canvas.onmousemove = function(e){
+
+    if(!drawing) return;
+
+    if(enhanceMode){
+
+        let rect = canvas.getBoundingClientRect();
+
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        enhanceAt(x,y);
+
+        return;
+    }
+
+    if(traceMode){
+
+        addTracePoint(e);
+    }
+ };
+ 
+// ================= ENHANCE =================
+function enhanceAt(x,y){
+
+    let size = 60;
+
+    let imgData = ctx.getImageData(x-size/2, y-size/2, size, size);
+    let data = imgData.data;
+
+    for(let i=0;i<data.length;i+=4){
+
+        let r=data[i], g=data[i+1], b=data[i+2];
+
+        let avg=(r+g+b)/3;
+
+        // contrast
+        r = avg + (r-avg)*enhanceStrength;
+        g = avg + (g-avg)*enhanceStrength;
+        b = avg + (b-avg)*enhanceStrength;
+
+        data[i]=r;
+        data[i+1]=g;
+        data[i+2]=b;
+    }
+
+    ctx.putImageData(imgData, x-size/2, y-size/2);
+}
+
+// ================= FULL ENHANCE =================
+function enhanceFull(){
+
+    let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+    let d = imgData.data;
+
+    for(let i=0;i<d.length;i+=4){
+
+        let avg=(d[i]+d[i+1]+d[i+2])/3;
+
+        d[i]=avg+(d[i]-avg)*enhanceStrength;
+        d[i+1]=avg+(d[i+1]-avg)*enhanceStrength;
+        d[i+2]=avg+(d[i+2]-avg)*enhanceStrength;
+    }
+
+    ctx.putImageData(imgData,0,0);
+}
+
+const ageScale = {
+
+    life:[0,75],
+    head:[0,75],
+    heart:[0,75],
+    fate:[0,75],
+    sun:[0,75]
+};
+
+function pointAge(index,total,line){
+
+    let scale = ageScale[line];
+
+    let pct = index/(total-1);
+
+    return Math.round(
+
+        scale[0] +
+
+        pct*(scale[1]-scale[0])
+    );
+}
+function drawAgeScale(points,line){
+
+    if(points.length < 15)
+        return;
+
+    ctx.fillStyle = "#00ffff";
+
+  ctx.font =
+     Math.max(
+        10,
+        imgScale * 5
+     ) + "px Arial";
+
+    let step =
+        Math.max(
+            20,
+            Math.floor(
+                points.length / 8
+            )
+        );
+
+    for(
+        let i=0;
+        i<points.length;
+        i+=step
+    ){
+
+        let p = points[i];
+
+        let age =
+            pointAge(
+                i,
+                points.length,
+                line
+            );
+
+        ctx.fillText(
+            age,
+            p.x*imgScale + imgX,
+            p.y*imgScale + imgY
+        );
+    }
+}
+
+function lineLength(points){
+
+    let len = 0;
+
+    for(let i=1;i<points.length;i++){
+
+        let dx =
+            points[i].x -
+            points[i-1].x;
+
+        let dy =
+            points[i].y -
+            points[i-1].y;
+
+        len += Math.sqrt(
+            dx*dx + dy*dy
+        );
+    }
+
+    return len;
+}
+
+function getLineStats(){
+
+    return {
+
+        life:
+            lineLength(
+                lifeLinePoints
+            ),
+
+        head:
+            lineLength(
+                headLinePoints
+            ),
+
+        heart:
+            lineLength(
+                heartLinePoints
+            ),
+
+        fate:
+            lineLength(
+                fateLinePoints
+            ),
+
+        sun:
+            lineLength(
+                sunLinePoints
+            )
+    };
+}
+// ================= DRAW =================
+function drawLine(pts,color){
+    if(pts.length<2) return;
+
+    ctx.beginPath();
+    ctx.strokeStyle=color;
+      ctx.lineWidth =
+      Math.max(
+           2,
+          imgScale * 0.4
+     );
+
+   ctx.lineCap = "round";
+   ctx.lineJoin = "round";
+   ctx.lineCap  = "round";
+    ctx.moveTo(pts[0].x*imgScale+imgX, pts[0].y*imgScale+imgY);
+
+    for(let i=1;i<pts.length;i++){
+        ctx.lineTo(pts[i].x*imgScale+imgX, pts[i].y*imgScale+imgY);
+    }
+
+    ctx.stroke();
+}
+
+function getArray(){
+
+    if(mode==="life") return lifeLinePoints;
+    if(mode==="fate") return fateLinePoints;
+    if(mode==="head") return headLinePoints;
+    if(mode==="heart") return heartLinePoints;
+    if(mode==="sun") return sunLinePoints;
+
+    return null;
+}
+
+function addTracePoint(e){
+
+    let rect =
+        canvas.getBoundingClientRect();
+
+    let p = {
+
+        x:
+            (e.clientX -
+             rect.left -
+             imgX) / imgScale,
+
+        y:
+            (e.clientY -
+             rect.top -
+             imgY) / imgScale
+    };
+
+    let arr = getArray();
+
+    if(!arr) return;
+
+    arr.push(p);
+
+    redraw();
+}
+
+function drawSymbols(){
+
+    ctx.font =
+        Math.max(
+            18,
+            imgScale * 10
+        ) + "px Arial";
+
+    symbols
+    .filter(sym => sym.palm === currentPalm)
+    .forEach(sym => {
+
+        let x =
+            sym.x * imgScale + imgX;
+
+        let y =
+            sym.y * imgScale + imgY;
+
+        switch(sym.type){
+
+            case "star":
+                ctx.fillText("★",x,y);
+                break;
+
+            case "cross":
+                ctx.fillText("✝",x,y);
+                break;
+
+            case "triangle":
+                ctx.fillText("△",x,y);
+                break;
+
+            case "square":
+                ctx.fillText("□",x,y);
+                break;
+
+            case "island":
+                ctx.fillText("◉",x,y);
+                break;
+
+            case "fish":
+                ctx.fillText("🐟",x,y);
+                break;
+
+            case "trident":
+                ctx.fillText("🔱",x,y);
+                break;
+        }
+    });
+}
+ 
+function drawLifeFan(){
+
+    if(!lifeFanAnchor){
+        drawLifeAxis();
+     }
+
+    ctx.save();
+
+    ctx.strokeStyle = "#ffcc00";
+    ctx.lineWidth = 2;
+
+    ctx.fillStyle = "#ffcc00";
+    ctx.font = "14px Arial";
+
+    const r = 1200;
+
+    lifeFanRays.forEach(ray=>{
+
+        let rad =
+            ray.angle *
+            Math.PI / 180;
+
+        let x2 =
+           lifeFanAnchor.x -
+           Math.cos(rad) * r;
+
+       let y2 =
+          lifeFanAnchor.y +
+          Math.sin(rad) * r;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            lifeFanAnchor.x,
+            lifeFanAnchor.y
+        );
+
+        ctx.lineTo(
+            x2,
+            y2
+        );
+
+        ctx.stroke();
+
+        ctx.fillText(
+            ray.age,
+            x2 - 40,
+            y2 - 10
+        );
+    });
+
+    ctx.beginPath();
+
+    ctx.arc(
+        lifeFanAnchor.x,
+        lifeFanAnchor.y,
+        6,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillText(
+        "Origin",
+        lifeFanAnchor.x + 10,
+        lifeFanAnchor.y
+    );
+
+    ctx.restore();
+}
+
+function drawAgeAxisLine(x1,y1,x2,y2,label){
+
+    ctx.save();
+
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.fillStyle = "#00ffff";
+    ctx.font = "12px Arial";
+
+    ctx.fillText(label,x1,y1-5);
+
+    ctx.restore();
+}
+
+function drawAgeAxis(){
+
+    console.log("drawAgeAxis running");
+
+    ctx.save();
+
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = 4;
+
+    let left   = imgX;
+    let top    = imgY;
+
+    let right  =
+        imgX + img.width * imgScale;
+
+    let bottom =
+        imgY + img.height * imgScale;
+
+    let palmW = right - left;
+    let palmH = bottom - top;
+    let w = canvas.clientWidth;
+    let h = canvas.clientHeight;
+
+    // Life
+drawAgeAxisLine(
+    left + palmW * 0.34,
+    top + palmH * 0.18,
+
+    left + palmW * 0.34,
+    bottom - palmH * 0.10,
+
+    "Life"
+);
+
+drawAgeAxisLine(
+    left + palmW * 0.22,
+    top + palmH * 0.54,
+
+    left + palmW * 0.82,
+    top + palmH * 0.54,
+
+    "Head"
+);
+
+drawAgeAxisLine(
+    left + palmW * 0.18,
+    top + palmH * 0.34,
+
+    left + palmW * 0.82,
+    top + palmH * 0.34,
+
+    "Heart"
+);
+
+drawAgeAxisLine(
+    left + palmW * 0.50,
+    bottom - palmH * 0.10,
+
+    left + palmW * 0.50,
+    top + palmH * 0.24,
+
+    "Fate"
+);
+
+ drawAgeAxisLine(
+    left + palmW * 0.63,
+    bottom - palmH * 0.10,
+
+    left + palmW * 0.63,
+    top + palmH * 0.26,
+
+    "Sun"
+);
+    ctx.restore();
+}
+// ================= REDRAW =================
+function redraw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // background FIRST
+    ctx.fillStyle = "#111";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // image SECOND
+    if(
+        img &&
+        img.complete &&
+        img.width > 0
+    ){
+
+        ctx.drawImage(
+            img,
+            imgX,
+            imgY,
+            img.width * imgScale,
+            img.height * imgScale
+        );
+    }
+
+   drawLine(lifeLinePoints,"green");
+   drawLine(fateLinePoints,"cyan");
+   drawLine(headLinePoints,"violet");
+   drawLine(heartLinePoints,"red");
+   drawLine(sunLinePoints,"orange");
+  if(showAgeAxis){
+
+    drawAgeAxis();
+
+    drawLifeFan();
+}
+
+drawAgeScale(
+    lifeLinePoints,
+    "life"
+);
+
+drawAgeScale(
+    headLinePoints,
+    "head"
+);
+
+drawAgeScale(
+    heartLinePoints,
+    "heart"
+);
+
+drawAgeScale(
+    fateLinePoints,
+    "fate"
+);
+
+drawAgeScale(
+    sunLinePoints,
+    "sun"
+);
+
+drawSymbols();
+}
+
+// ================= ZOOM =================
+canvas.addEventListener("wheel", function(e){
+
+    e.preventDefault();
+
+    if(e.deltaY < 0)
+        imgScale *= 1.15;
+    else
+        imgScale *= 0.90;
+
+    imgScale =
+        Math.max(
+            MIN_ZOOM,
+            Math.min(MAX_ZOOM,imgScale)
+        );
+
+    redraw();
+});
+
+function zoomIn(){
+
+    imgScale =
+        Math.min(
+            MAX_ZOOM,
+            imgScale * 1.25
+        );
+
+    redraw();
+}
+
+function zoomOut(){
+
+    imgScale =
+        Math.max(
+            MIN_ZOOM,
+            imgScale / 1.25
+        );
+
+    redraw();
+}
+
+// ================= RESET =================
+function clearCanvas(){
+
+    lifeLinePoints=[];
+    fateLinePoints=[];
+    headLinePoints=[];
+    heartLinePoints=[];
+    sunLinePoints=[];
+
+    symbols =
+    symbols.filter(
+        s => s.palm !== currentPalm
+    );
+
+    redraw();
+}
+// ================= UNDO =================
+function undoLast(){
+    let arr=getArray();
+    if(arr && arr.length>0) arr.pop();
+    redraw();
+}
+function setLifeAnchor(){
+
+    lifeFanMode = true;
+
+    alert(
+        "Click Life-Line Origin Point"
+    );
+}
+function toggleAgeAxis(){
+
+    showAgeAxis = !showAgeAxis;
+
+    console.log(
+        "Age Axis:",
+        showAgeAxis
+    );
+
+    redraw();
+}
+let palmData={
+
+ left:{
+   life:[],
+   fate:[],
+   head:[],
+   heart:[],
+   sun:[]
+ },
+
+ right:{
+   life:[],
+   fate:[],
+   head:[],
+   heart:[],
+   sun:[]
+ }
+};
+
+function syncCurrentPalm(){
+ palmData[currentPalm]={
+  life:lifeLinePoints,
+  fate:fateLinePoints,
+  head:headLinePoints,
+  heart:heartLinePoints,
+  sun:sunLinePoints
+ };
+}
+
+function switchPalm(side){
+
+ syncCurrentPalm();
+
+ currentPalm=side;
+
+ let d=palmData[side];
+
+ lifeLinePoints=d.life||[];
+ fateLinePoints=d.fate||[];
+ headLinePoints=d.head||[];
+ heartLinePoints=d.heart||[];
+ sunLinePoints=d.sun||[];
+
+ redraw();
+}
+
+function collectState(){
+
+ syncCurrentPalm();
+
+ return {
+
+   palms:palmData,
+   symbols:symbols,
+   lifeFanAnchor:lifeFanAnchor,
+   mounts:{
+      jupiter:document.getElementById('m_jupiter')?.value,
+      saturn:document.getElementById('m_saturn')?.value,
+      sun:document.getElementById('m_sun')?.value,
+      mercury:document.getElementById('m_mercury')?.value,
+      mars:document.getElementById('m_mars')?.value,
+      moon:document.getElementById('m_moon')?.value,
+      venus:document.getElementById('m_venus')?.value
+   },
+
+   notes:
+      document.getElementById('notes')?.value || ''
+
+ };
+}
+
+function restoreMounts(m){
+
+    if(!m) return;
+
+    document.getElementById("m_jupiter").value =
+        m.jupiter || "";
+
+    document.getElementById("m_saturn").value =
+        m.saturn || "";
+
+    document.getElementById("m_sun").value =
+        m.sun || "";
+
+    document.getElementById("m_mercury").value =
+        m.mercury || "";
+
+    document.getElementById("m_mars").value =
+        m.mars || "";
+
+    document.getElementById("m_moon").value =
+        m.moon || "";
+
+    document.getElementById("m_venus").value =
+        m.venus || "";
+}
+
+function saveSession(){
+ localStorage.setItem('palmsutra_v2',JSON.stringify(collectState()));
+ alert('Session saved');
+}
+
+function loadSession(){
+
+ let s=localStorage.getItem('palmsutra_v2');
+
+ if(!s) return;
+
+ let d=JSON.parse(s);
+ lifeFanAnchor =
+    d.lifeFanAnchor || null;
+
+ palmData=d.palms||palmData;
+
+ document.getElementById('notes').value =
+     d.notes || '';
+
+ restoreMounts(d.mounts);
+
+ switchPalm(currentPalm);
+
+ symbols = d.symbols || [];
+
+ redraw();
+}
+
+function exportSession(){
+ let blob=new Blob([JSON.stringify(collectState(),null,2)],{type:'application/json'});
+ let a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='palmsutra_session.json';
+ a.click();
+}
+
+function importSession(e){
+
+ let f=e.target.files[0];
+
+ if(!f) return;
+
+ let r=new FileReader();
+
+ r.onload=function(){
+
+  let d=JSON.parse(r.result);
+  lifeFanAnchor =
+    d.lifeFanAnchor || null;
+
+  palmData=d.palms || palmData;
+
+  document.getElementById('notes').value =
+      d.notes || '';
+
+  restoreMounts(d.mounts);
+
+  switchPalm(currentPalm);
+
+  symbols = d.symbols || [];
+
+  redraw();
+ };
+
+ r.readAsText(f);
+}
+
+function projectToAxis(
+    px, py,
+    x1, y1,
+    x2, y2
+){
+
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+
+    const len2 =
+        dx * dx +
+        dy * dy;
+
+    if(len2 === 0)
+        return 0;
+
+    let t =
+        (
+            (px - x1) * dx +
+            (py - y1) * dy
+        ) / len2;
+
+    t = Math.max(
+        0,
+        Math.min(1, t)
+    );
+
+    return t;
+}
+
+function axisPercentToAge(t){
+
+    if(t <= 0.5){
+
+        return (
+            t / 0.5
+        ) * 30;
+    }
+
+    if(t <= 0.75){
+
+        return (
+            30 +
+            (
+                (t - 0.5) / 0.25
+            ) * 22.5
+        );
+    }
+
+    return (
+        52.5 +
+        (
+            (t - 0.75) / 0.25
+        ) * 22.5
+    );
+}
+
+function lifeFanAge(
+    px,
+    py
+){
+
+    if(!lifeFanAnchor)
+        return null;
+
+    const dx =
+        px -
+        lifeFanAnchor.x;
+
+    const dy =
+        py -
+        lifeFanAnchor.y;
+
+    let angle =
+        Math.atan2(
+            dy,
+            dx
+        ) *
+        180 /
+        Math.PI;
+
+    if(angle < 0)
+        angle += 360;
+
+    return angle;
+}
+
+function angleToLifeAge(
+    angle
+){
+
+    const rays = [
+
+        {
+            age:30,
+            angle:35
+        },
+
+        {
+            age:50,
+            angle:50
+        },
+
+        {
+            age:62.5,
+            angle:65
+        },
+
+        {
+            age:75,
+            angle:80
+        }
+
+    ];
+
+    if(angle <= rays[0].angle)
+        return rays[0].age;
+
+    for(
+        let i=0;
+        i<rays.length-1;
+        i++
+    ){
+
+        const r1 =
+            rays[i];
+
+        const r2 =
+            rays[i+1];
+
+        if(
+            angle >= r1.angle &&
+            angle <= r2.angle
+        ){
+
+            const p =
+                (
+                    angle -
+                    r1.angle
+                ) /
+                (
+                    r2.angle -
+                    r1.angle
+                );
+
+            return (
+                r1.age +
+                p *
+                (
+                    r2.age -
+                    r1.age
+                )
+            );
+        }
+    }
+
+    return 75;
+}
+
+function nearestLine(
+    x,
+    y
+){
+
+    const lines = [
+
+        {
+            name:"life",
+            pts:lifeLinePoints
+        },
+
+        {
+            name:"head",
+            pts:headLinePoints
+        },
+
+        {
+            name:"heart",
+            pts:heartLinePoints
+        },
+
+        {
+            name:"fate",
+            pts:fateLinePoints
+        },
+
+        {
+            name:"sun",
+            pts:sunLinePoints
+        }
+
+    ];
+
+    let bestLine = null;
+
+    let bestDist =
+        Infinity;
+
+    lines.forEach(line=>{
+
+        if(
+            !line.pts ||
+            line.pts.length===0
+        )
+            return;
+
+        line.pts.forEach(p=>{
+
+            const d =
+                Math.hypot(
+                    p.x - x,
+                    p.y - y
+                );
+
+            if(
+                d < bestDist
+            ){
+
+                bestDist = d;
+
+                bestLine =
+                    line.name;
+            }
+
+        });
+
+    });
+
+    return {
+
+        line:bestLine,
+
+        distance:bestDist
+    };
+}
+
+function getSymbolAge(
+    symbol
+){
+
+    const hit =
+        nearestLine(
+            symbol.x,
+            symbol.y
+        );
+
+    if(!hit.line)
+        return null;
+
+    if(
+        hit.line === "life"
+    ){
+
+        const ang =
+            lifeFanAge(
+                symbol.x,
+                symbol.y
+            );
+
+        return {
+            line:"life",
+            age:
+                angleToLifeAge(
+                    ang
+                )
+        };
+    }
+
+    return {
+        line:hit.line,
+        age:null
+    };
+}
+function generateReport(){
+
+    let report=[];
+
+    report.push(
+        lifeLinePoints.length>0
+        ? "Life Line: Marked"
+        : "Life Line: Not Marked"
+    );
+
+    report.push(
+        headLinePoints.length>0
+        ? "Head Line: Marked"
+        : "Head Line: Not Marked"
+    );
+
+    report.push(
+        heartLinePoints.length>0
+        ? "Heart Line: Marked"
+        : "Heart Line: Not Marked"
+    );
+
+    report.push(
+        fateLinePoints.length>0
+        ? "Fate Line: Marked"
+        : "Fate Line: Not Marked"
+    );
+    
+    report.push(
+    sunLinePoints.length>0
+    ? "Sun Line: Marked"
+    : "Sun Line: Not Marked"
+   );
+    report.push(
+    "Jupiter Mount: " +
+    document.getElementById("m_jupiter").value
+    );
+
+    report.push(
+    "Saturn Mount: " +
+    document.getElementById("m_saturn").value
+   );
+   
+   report.push(
+    "Sun Mount: " +
+    document.getElementById("m_sun").value
+   );
+   
+   report.push(
+    "Mercury Mount: " +
+    document.getElementById("m_mercury").value
+   );
+   
+   report.push(
+    "Moon Mount: " +
+    document.getElementById("m_moon").value
+   );
+   
+   report.push(
+    "Mars Mount: " +
+    document.getElementById("m_mars").value
+   );
+   
+   report.push(
+    "Venus Mount: " +
+    document.getElementById("m_venus").value
+   );
+   let stats =
+    getLineStats();
+  if(symbols.length){
+  
+    report.push("");
+    report.push("Symbols:");
+
+    symbols
+    .filter(s => s.palm === currentPalm)
+    .forEach(s => {
+
+        report.push(
+            s.type +
+            " (" +
+            s.palm +
+            " palm)"
+        );
+    });
+}
+ 
+   report.push("");
+    report.push("Line Analytics");
+
+  report.push(
+    "Life Length: " +
+    stats.life.toFixed(0)
+  );
+
+  report.push(
+    "Head Length: " +
+    stats.head.toFixed(0)
+  );
+
+  report.push(
+    "Heart Length: " +
+    stats.heart.toFixed(0)
+ );
+
+  report.push(
+    "Fate Length: " +
+    stats.fate.toFixed(0)
+ );
+
+ report.push(
+    "Sun Length: " +
+    stats.sun.toFixed(0)
+ );
+ 
+    let c = document.getElementById("reportContent");
+
+    c.innerHTML =
+        "<b>Active Palm:</b> " + currentPalm +
+        "<br><br>" +
+        report.join("<br>") +
+        "<br><br><b>Notes:</b><br>" +
+        document.getElementById("notes").value;
+
+   document.getElementById("reportPanel").style.display = "block";
+}
+
+// Initial startup
+resizeCanvas();
+redraw();
+
+</script>
+
+</body>
+</html>

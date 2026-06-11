@@ -1,0 +1,32 @@
+
+.workspace-tabs{
+display:flex;
+gap:10px;
+padding:10px 12px;
+background:#ece7c9;
+border-bottom:1px solid #999;
+flex-wrap:wrap;
+}
+
+.workspace-tab{
+padding:10px 18px;
+border:1px solid #999;
+border-radius:6px;
+background:#efefef;
+cursor:pointer;
+font-size:18px;
+font-weight:bold;
+}
+
+.workspace-tab:hover{
+background:#dbeafe;
+}
+
+.active-tab{
+background:#2563eb;
+color:white;
+}
+
+.workspace-panel{
+width:100%;
+}

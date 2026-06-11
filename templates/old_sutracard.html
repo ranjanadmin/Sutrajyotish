@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SutraJyotish Oracle Final</title>
+
+<style>
+body{
+font-family:Georgia,serif;
+background:#0e0a17;
+color:#e6d7a8;
+margin:0;
+display:flex;
+}
+
+#left{flex:3;padding:20px;}
+#right{flex:2;border-left:1px solid #3a2c4f;padding:20px;background:#120d1f;}
+
+h1{text-align:center;color:#d6b56c}
+
+#consultation{text-align:center;margin:20px 0;}
+
+input{
+background:#0c0814;
+color:#e6d7a8;
+border:1px solid #6b5b3e;
+padding:6px;
+width:65%;
+}
+
+#spread{
+display:grid;
+grid-template-columns:repeat(auto-fill,110px);
+gap:12px;
+justify-content:center;
+min-height:200px;
+margin-top:30px;
+}
+
+.card{
+width:110px;
+height:150px;
+border-radius:8px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-size:14px;
+font-weight:bold;
+border:2px solid #222;
+text-align:center;
+}
+
+.zodiac{
+background:#2d1b69;
+border-color:#9d8cff;
+}
+
+.planet{
+background:#6b1b1b;
+border-color:#ff8c8c;
+}
+
+.house{
+background:#1d4d34;
+border-color:#7cffb0;
+}
+
+.element{
+margin-top:6px;
+padding:3px 8px;
+border-radius:4px;
+font-size:12px;
+}
+
+.fire{background:#ff5722}
+.water{background:#2196f3}
+.air{background:#9e9e9e}
+.earth{background:#795548}
+
+button{
+background:#1c1430;
+color:#d6b56c;
+border:1px solid #6b5b3e;
+padding:8px 12px;
+margin:6px;
+cursor:pointer;
+}
+
+textarea{
+width:100%;
+height:170px;
+background:#0c0814;
+color:#d6b56c;
+border:1px solid #6b5b3e;
+margin-bottom:10px;
+padding:8px;
+}
+
+#elementPanel{
+display:none;
+margin-top:15px;
+padding:10px;
+border:1px solid #6b5b3e;
+background:#0c0814;
+}
+
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 20px;
+background:#120d1f;
+border-bottom:1px solid #3a2c4f;
+}
+
+.brand{
+font-size:24px;
+font-weight:bold;
+color:#d6b56c;
+}
+
+.top-menu{
+display:flex;
+gap:10px;
+}
+
+.menu-btn{
+background:#1c1430;
+color:#d6b56c;
+border:1px solid #6b5b3e;
+padding:8px 14px;
+cursor:pointer;
+border-radius:6px;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="header">
+
+<div class="brand">
+SutraJyotish
+</div>
+
+<div class="top-menu">
+
+<a href="/sutracard">
+<button class="menu-btn">
+Sutra Card
+</button>
+</a>
+
+<a href="/numerology">
+<button class="menu-btn">
+Numero Chart
+</button>
+</a>
+
+<button
+class="menu-btn"
+onclick="refreshModule('sutracard')"
+>
+Refresh
+</button>
+
+</div>
+
+</div>
+
+
+<div id="left">
+
+<h1>SutraJyotish Consultation</h1>
+
+<div id="consultation">
+
+Step 1 – Ask Question<br><br>
+<input id="question" placeholder="Enter client question"><br><br>
+
+Step 2 – Pull Cards<br><br>
+
+<button onclick="pullZodiac()">Pull Zodiac</button>
+<button onclick="pullPlanet()">Pull Planet</button>
+<button onclick="pullHouse()">Pull House</button>
+
+</div>
+
+<h3>Consultation Spread</h3>
+<div id="spread"></div>
+
+<button onclick="analyze()">Detect Events</button>
+<button onclick="toggleElements()">Show Element Balance</button>
+<button onclick="refreshDeck()">Refresh Consultation</button>
+
+<div id="elementPanel"></div>
+
+</div>
+
+<div id="right">
+
+<h3>Detected Events (Editable)</h3>
+<textarea id="events"></textarea>
+
+<h3>Consultation Report (Editable)</h3>
+<textarea id="interpretation"></textarea>
+
+</div>
+
+<script>
+
+function refreshModule(moduleName){
+
+if(moduleName==="sutracard"){
+window.location.href="/sutracard"
+}
+
+else if(moduleName==="numero"){
+window.location.href="/numerology"
+}
+
+else{
+window.location.href="/"
+}
+}
+
+
+const zodiacBase=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
+const planetBase=["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn","Rahu","Ketu"]
+const elements=["Earth","Air","Water","Fire"]
+
+let zodiacDeck=[]
+let planetDeck=[]
+let houseDeck=[]
+let pulled=[]
+
+const rules=[
+{houses:[2,7,11],planets:["Venus"],event:"Marriage"},
+{houses:[2,6,10,11],planets:["Saturn","Mercury"],event:"Job / Employment"},
+{houses:[3,9,12],planets:[],event:"Foreign Travel"},
+{houses:[1,6,8],planets:["Mars","Ketu"],event:"Surgery"},
+{houses:[4,11,12],planets:["Mars","Saturn"],event:"Property Purchase"}
+]
+
+function shuffle(a){
+for(let i=a.length-1;i>0;i--){
+let j=Math.floor(Math.random()*(i+1))
+let t=a[i];a[i]=a[j];a[j]=t
+}
+}
+
+function initDeck(){
+
+zodiacDeck=[...zodiacBase]
+planetDeck=[...planetBase]
+houseDeck=[]
+
+for(let h=1;h<=12;h++){
+elements.forEach(el=>{
+houseDeck.push({house:h,element:el})
+})
+}
+
+shuffle(zodiacDeck)
+shuffle(planetDeck)
+shuffle(houseDeck)
+
+pulled=[]
+spread.innerHTML=""
+events.value=""
+interpretation.value=""
+elementPanel.style.display="none"
+}
+
+function createCard(text,cls,element){
+
+let d=document.createElement("div")
+d.className="card "+cls
+
+if(element){
+
+let emoji=""
+if(element=="Fire") emoji="🔥"
+if(element=="Water") emoji="🌊"
+if(element=="Air") emoji="🌬"
+if(element=="Earth") emoji="🌍"
+
+let elClass=element.toLowerCase()
+
+d.innerHTML=text+"<div class='element "+elClass+"'>"+emoji+" "+element+"</div>"
+
+}else{
+
+d.innerText=text
+
+}
+
+spread.appendChild(d)
+
+}
+
+function pullZodiac(){
+
+if(zodiacDeck.length===0){alert("All zodiac used");return}
+
+let card=zodiacDeck.pop()
+createCard(card,"zodiac")
+
+pulled.push({type:"zodiac",value:card})
+
+}
+
+function pullPlanet(){
+
+if(planetDeck.length===0){alert("All planets used");return}
+
+let card=planetDeck.pop()
+createCard(card,"planet")
+
+pulled.push({type:"planet",value:card})
+
+}
+
+function pullHouse(){
+
+if(houseDeck.length===0){alert("All house cards used");return}
+
+let card=houseDeck.pop()
+
+createCard("H"+card.house,"house",card.element)
+
+pulled.push({type:"house",value:card.house,element:card.element})
+
+}
+
+function analyze(){
+
+let houses=pulled.filter(x=>x.type=="house").map(x=>x.value)
+let planetsSel=pulled.filter(x=>x.type=="planet").map(x=>x.value)
+
+let results=[]
+
+rules.forEach(r=>{
+
+let houseMatch=r.houses.every(h=>houses.includes(h))
+
+if(houseMatch){
+
+let planetSupport=r.planets.filter(p=>planetsSel.includes(p))
+
+if(planetSupport.length>0){
+results.push(r.event+" (supported by "+planetSupport.join(", ")+")")
+}else{
+results.push(r.event+" (house combination only)")
+}
+
+}
+
+})
+
+if(results.length===0)results.push("No major rule detected")
+
+events.value=results.join("\n")
+
+interpretation.value=
+"Question: "+question.value+"\n\n"+
+"Houses Activated: "+houses.join(", ")+"\n"+
+"Planets Selected: "+planetsSel.join(", ")+"\n\n"+
+"Events detected using SutraJyotish rule engine.\n"+
+"You may edit this report before sharing with the client."
+
+}
+
+function toggleElements(){
+
+let fire=0,water=0,air=0,earth=0
+
+pulled.forEach(c=>{
+if(c.element==="Fire") fire++
+if(c.element==="Water") water++
+if(c.element==="Air") air++
+if(c.element==="Earth") earth++
+})
+
+elementPanel.innerHTML=
+"<b>Element Balance</b><br><br>"+
+"🔥 Fire : "+fire+"<br>"+
+"🌊 Water : "+water+"<br>"+
+"🌬 Air : "+air+"<br>"+
+"🌍 Earth : "+earth
+
+elementPanel.style.display="block"
+
+}
+
+function refreshDeck(){
+initDeck()
+}
+
+initDeck()
+
+</script>
+
+</body>
+</html>

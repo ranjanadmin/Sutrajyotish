@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   SutraJyotish Workspace
+  </title>
+  <link href="/static/css/workspace.css" rel="stylesheet"/>
+ </head>
+ <body>
+ <div class="top-toolbar">
+
+    <div class="left-toolbar">
+
+        <button class="landing-btn"
+            onclick="window.location.href='/transit_workspace'">
+
+            ← Back
+
+        </button>
+
+    </div>
+
+    <div class="brand-logo">🕉 SutraJyotish</div><div class="right-toolbar">
+
+        <button class="toolbar-btn"
+            onclick="window.location.href='/'">
+
+              Home
+
+        </button>
+
+    </div>
+
+</div>
+  
+
+<div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 18px;
+    background:#f8f5ea;
+    border-bottom:1px solid #d8d1b3;
+">
+    <label style="
+        font-weight:bold;
+        font-size:16px;
+    ">
+        Revolve From House
+    </label>
+
+    <input
+        type="number"
+        id="revolveHouseInput"
+        min="1"
+        max="12"
+        value="1"
+        style="
+            width:80px;
+            padding:6px;
+            font-size:16px;
+            border:1px solid #999;
+            border-radius:4px;
+        "
+    >
+
+    <button
+        onclick="revolveHouse()"
+        style="
+            padding:7px 16px;
+            font-size:15px;
+            background:#1d4ed8;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        "
+    >
+        Revolve
+    </button>
+</div>
+
+<div class="workspace-tabs">
+
+<button class="workspace-tab active-tab" onclick="showWorkspacePanel('chartsPanel', this)">Charts</button>
+
+<button class="workspace-tab" onclick="showWorkspacePanel('planetsPanel', this)">Planets</button>
+<button class="workspace-tab" onclick="showWorkspacePanel('cuspsPanel', this)">Cusps</button>
+
+</div>
+
+<div class="workspace-container">
+   <div class="workspace-panel" id="chartsPanel">
+<div class="top-section">
+    <div class="chart-box">
+     <div class="panel-title">
+      Lagna Chart
+     </div>
+     <div id="lagnaChart">
+     </div>
+    </div>
+    <div class="chart-box">
+     <div class="panel-title">
+      Bhav Chalit
+     </div>
+     <div id="bhavChart">
+     </div>
+    </div>
+    <div class="right-panel">
+     <div class="dasa-panel">
+      <div class="dasa-panel">
+       <div class="panel-title">
+        Vimshottari Dasa
+       </div>
+       <div id="dasaNavigator">
+       </div>
+       <div id="dasaTableContainer">
+       </div>
+      </div>
+      <div class="details-panel">
+       <div class="detail-row">
+        <span>
+         Date of Birth
+        </span>
+        <span id="dobValue">
+        </span>
+       </div>
+       <div class="detail-row">
+        <span>
+         Latitude
+        </span>
+        <span id="latValue">
+        </span>
+       </div>
+       <div class="detail-row">
+        <span>
+         Longitude
+        </span>
+        <span id="lonValue">
+        </span>
+       </div>
+       <div class="detail-row">
+        <span>
+         Sidereal Time
+        </span>
+        <span id="siderealValue">
+        </span>
+       </div>
+      </div>
+      <div class="ruling-panel">
+       <div class="panel-title">
+        Ruling Planets
+       </div>
+       <div id="rulingPlanets">
+       </div>
+      </div>
+      <div class="time-tool-panel">
+       <div class="panel-title">
+        Time Tool
+       </div>
+       <div class="time-tool-grid">
+        <div class="time-row">
+         <span>
+          1 Day
+         </span>
+         <button onclick="adjustBirthTime('day',1)">
+          +
+         </button>
+         <button onclick="adjustBirthTime('day',-1)">
+          -
+         </button>
+        </div>
+        <div class="time-row">
+         <span>
+          1 Hour
+         </span>
+         <button onclick="adjustBirthTime('hour',1)">
+          +
+         </button>
+         <button onclick="adjustBirthTime('hour',-1)">
+          -
+         </button>
+        </div>
+        <div class="time-row">
+         <span>
+          10 Minute
+         </span>
+         <button onclick="adjustBirthTime('minute10',1)">
+          +
+         </button>
+         <button onclick="adjustBirthTime('minute10',-1)">
+          -
+         </button>
+        </div>
+        <div class="time-row">
+         <span>
+          1 Minute
+         </span>
+         <button onclick="adjustBirthTime('minute1',1)">
+          +
+         </button>
+         <button onclick="adjustBirthTime('minute1',-1)">
+          -
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    </div>
+
+   
+<div class="grid-section">
+
+    <div class="panel-title">
+        Sutra Grid
+    </div>
+
+    <table class="sutra-grid-horosoft" id="sutraGrid">
+
+        <tbody id="sutraGridBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="dasa-drill-section"
+     style="
+        margin-top:25px;
+        background:#f8f5ea;
+        border:1px solid #d8d1b3;
+        padding:18px;
+        border-radius:10px;
+">
+
+    <div class="panel-title"
+         style="
+            font-size:26px;
+            margin-bottom:18px;
+         ">
+         Vimshottari Dasa Navigator
+    </div>
+
+    <div id="dasaDrilldownContainer"
+         style="
+            font-size:18px;
+            line-height:1.9;
+            color:#1f2937;
+         ">
+    </div>
+
+</div>
+
+</div>
+
+<div class="workspace-panel" id="planetsPanel" style="display:none;">
+<div class="panel-title">Planets</div>
+<div id="planetsContent"></div>
+</div>
+
+<div class="workspace-panel" id="cuspsPanel" style="display:none;">
+<div class="panel-title">Cusps</div>
+<div id="cuspsContent"></div>
+</div>
+
+
+
+<script src="/static/js/workspace.js?v=1004"></script>
+  </div>
+ </body>
+</html>

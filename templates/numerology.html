@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numerology Chart Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1008;
+  --parchment: #f5ead8;
+  --parchment2: #ede0c4;
+  --parchment3: #e0ceaa;
+  --gold: #b5862a;
+  --gold2: #d4a843;
+  --gold3: #8a6010;
+  --red: #8b2020;
+  --green: #1a5c2a;
+  --blue: #1a3060;
+  --muted: #7a6040;
+  --border: rgba(90,60,10,0.3);
+  --shadow: rgba(30,15,0,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--ink);
+  font-family: 'Spectral', serif;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* PAPER TEXTURE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ---- HEADER ---- */
+.app-header {
+  background: var(--ink);
+  padding: 36px 20px 28px;
+  text-align: center;
+  border-bottom: 2px solid var(--gold3);
+  position: relative;
+}
+
+.app-header::after {
+  content: '✦ ✦ ✦';
+  display: block;
+  color: var(--gold3);
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  margin-top: 10px;
+}
+
+.app-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.3rem, 4vw, 2.2rem);
+  color: var(--gold2);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+/* ---- TABS ---- */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  background: #120c04;
+  border-bottom: 1px solid var(--gold3);
+}
+
+.tab-btn {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  padding: 14px 28px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-transform: uppercase;
+}
+
+.tab-btn:hover { color: var(--gold2); }
+
+.tab-btn.active {
+  color: var(--gold2);
+  border-bottom-color: var(--gold2);
+  background: rgba(180,130,40,0.06);
+}
+
+/* ---- MAIN CONTENT ---- */
+.content {
+  background: var(--parchment);
+  min-height: calc(100vh - 160px);
+}
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ---- FORM SECTION ---- */
+.form-section {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 24px 30px;
+}
+
+.form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.form-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.form-row.trio {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.form-row.single {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 520px) {
+  .form-row, .form-row.trio { grid-template-columns: 1fr; }
+}
+
+.field label {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold3);
+  margin-bottom: 6px;
+}
+
+.field input[type="date"], .field input[type="text"], .field select {
+  width: 100%;
+  background: #fffaf2;
+  border: 1px solid var(--parchment3);
+  border-bottom: 2px solid var(--gold3);
+  color: var(--ink);
+  padding: 9px 12px;
+  font-family: 'Spectral', serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.field input:focus, .field select:focus {
+  border-color: var(--gold);
+  background: #fff;
+}
+
+.field input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.btn-generate {
+  width: 100%;
+  background: var(--ink);
+  color: var(--gold2);
+  border: 1px solid var(--gold3);
+  padding: 13px 24px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.btn-generate:hover {
+  background: #2a1a04;
+  border-color: var(--gold2);
+  color: var(--gold2);
+}
+
+/* ---- DIVIDER ---- */
+.ornamental-divider {
+  text-align: center;
+  color: var(--gold3);
+  font-size: 0.75rem;
+  letter-spacing: 0.5em;
+  margin: 0;
+  padding: 12px 0 0;
+  opacity: 0.7;
+}
+
+/* ---- CHARTS AREA ---- */
+.charts-area {
+  padding: 0 16px 40px;
+  display: none;
+}
+.charts-area.visible { display: block; }
+
+.charts-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+  text-align: center;
+  padding: 20px 0 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
+}
+
+.charts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ---- SINGLE CHART CARD ---- */
+.chart-card {
+  background: #fff9ee;
+  border: 1px solid var(--parchment3);
+  box-shadow: 0 2px 8px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+  padding: 14px;
+  flex: 0 0 auto;
+  animation: cardIn 0.3s ease both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.chart-date {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--parchment3);
+  min-width: 190px;
+  line-height: 1.35;
+}
+
+/* THE GRID ITSELF */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 58px);
+  gap: 3px;
+  margin: 0 auto;
+}
+
+.cell {
+  background: var(--parchment);
+  border: 1px solid var(--parchment3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 58px;
+  padding: 2px;
+}
+
+.cell-pos {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.45rem;
+  color: var(--parchment3);
+  line-height: 1;
+  font-weight: 700;
+}
+
+.cell-nums {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  word-break: break-all;
+  padding: 4px 2px 0;
+  max-width: 56px;
+}
+
+/* Color coding: normal=ink, dasha=red, year=green */
+.cell-nums .n-normal { color: var(--ink); }
+.cell-nums .n-dasha  { color: var(--red); font-weight: 700; }
+.cell-nums .n-year   { color: var(--green); font-weight: 700; }
+
+.chart-footer {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--parchment3);
+  font-family: 'Spectral', serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.chart-footer .lbl-dasha { color: var(--red); font-weight: 500; }
+.chart-footer .lbl-year  { color: var(--green); font-weight: 500; }
+.chart-footer .lbl-day   { color: var(--blue); font-weight: 500; }
+
+/* ---- BIRTH CHART — wider ---- */
+.birth-card { border-top: 3px solid var(--gold3); }
+.birth-card .chart-date { font-size: 0.95rem; color: var(--gold3); }
+
+/* SubYear date range card */
+.sy-card { border-top: 3px solid var(--blue); }
+.sy-card .chart-date { font-size: 0.78rem; color: var(--blue); }
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 12px 0 16px;
+  font-family: 'Spectral', serif;
+  font-size: 0.82rem;
+}
+
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-ink   { background: var(--ink); }
+.dot-red   { background: var(--red); }
+.dot-green { background: var(--green); }
+.dot-blue  { background: var(--blue); }
+
+/* Scrollable charts */
+.charts-scroll {
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+/* Error */
+.error-msg {
+  background: #fff0f0;
+  border: 1px solid #d09090;
+  color: var(--red);
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  margin: 12px 0;
+  border-radius: 1px;
+}
+
+/* Watermark grid lines in background of chart area */
+.charts-area-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ---- TOP MENU ---- */
+.top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 20px;
+background:#120c04;
+border-bottom:1px solid var(--gold3);
+}
+
+.brand{
+font-family:'Cinzel Decorative', serif;
+font-size:1.1rem;
+color:var(--gold2);
+}
+
+.top-menu{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.menu-btn{
+font-family:'Cinzel Decorative', serif;
+font-size:0.7rem;
+letter-spacing:0.08em;
+padding:10px 14px;
+background:#1c1430;
+color:var(--gold2);
+border:1px solid var(--gold3);
+cursor:pointer;
+border-radius:4px;
+}
+
+.menu-btn:hover{
+background:#2a1a04;
+}
+@media print {
+
+  .top-bar,
+  .tabs,
+  .form-section,
+  .btn-generate,
+  button {
+      display:none !important;
+  }
+
+  body{
+      background:white !important;
+  }
+
+  .content,
+  .chart-card,
+  .charts-area{
+      display:block !important;
+      visibility:visible !important;
+  }
+
+  .charts-grid{
+      display:flex !important;
+      flex-wrap:wrap !important;
+      gap:10px !important;
+  }
+
+  .chart-card{
+      break-inside:avoid;
+      page-break-inside:avoid;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+
+<div class="brand">
+SutraJyotish
+</div>
+
+<div class="top-menu">
+
+<a href="/sutracard">
+<button class="menu-btn">
+Sutra Card
+</button>
+</a>
+
+<a href="/numerology">
+<button class="menu-btn">
+Numero Chart
+</button>
+</a>
+<button
+class="menu-btn"
+onclick="printNumerology()"
+>
+🖨 Print Chart
+</button>
+<button
+class="menu-btn"
+onclick="window.location.href='/'"
+>
+← Back to Landing Page
+</button>
+
+</div>
+
+</div>
+
+
+<div class="app-header">
+  <div class="app-title">Numerology Chart Generator</div>
+  <div class="app-subtitle">Birth Chart · Year Chart · Sub-Year Cycles</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('birth')">Birth Chart</button>
+  <button class="tab-btn" onclick="switchTab('subyear')">Sub-Year Chart</button>
+</div>
+
+<!-- ========== BIRTH CHART TAB ========== -->
+<div class="content">
+<div id="tab-birth" class="tab-pane active">
+  <div class="form-section">
+    <div class="form-title">Birth Chart Generator</div>
+    <div class="form-desc">
+      Enter date of birth and a year range to generate the birth numerology grid plus annual charts for each year in range.
+      <br>Each yearly chart shows the <span style="color:var(--red);font-weight:500">Dasha number</span> (red) and <span style="color:var(--green);font-weight:500">Year number</span> (green).
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="bc-dob">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <div style="padding-top:4px; font-size:0.82rem; color:var(--muted); font-style:italic; line-height:1.4">
+          The grid position matrix:<br>
+          <strong style="font-family:'Playfair Display',serif; color:var(--gold3)">3 1 9 / 6 7 5 / 2 8 4</strong>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Year Range — Start</label>
+        <input type="date" id="bc-start">
+      </div>
+      <div class="field">
+        <label>Year Range — End</label>
+        <input type="date" id="bc-end">
+      </div>
+    </div>
+    <div class="form-row single">
+      <button class="btn-generate" onclick="generateBirthChart()">⊕ Generate Birth Charts</button>
+    </div>
+    <div id="bc-error" class="error-msg" style="display:none"></div>
+  </div>
+
+  <div class="ornamental-divider">— ✦ —</div>
+
+  <div id="bc-charts" class="charts-area">
+    <div class="charts-area-inner">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-ink"></div> Base numbers</div>
+        <div class="legend-item"><div class="legend-dot dot-red"></div> Dasha No.</div>
+        <div class="legend-item"><div class="legend-dot dot-green"></div> Year No.</div>
+      </div>
+      <div class="charts-scroll">
+        <div class="charts-grid" id="bc-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SUB-YEAR TAB ========== -->
+<div id="tab-subyear" class="tab-pane">
+  <div class="form-section">
+    <div class="form-title">Sub-Year Chart Generator</div>
+    <div class="form-desc">
+      Enter date of birth and a target year to generate the Sub-Year cycle charts.
+      Each cycle spans <em>n × 8 days</em> where n is the sequence number starting from the Year Number.
+      The <span style="color:var(--red);font-weight:500">Dasha number</span> (red) marks the base dasha;
+      the <span style="color:var(--blue);font-weight:500">Day number</span> (blue) marks the sub-cycle ruler.
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="sy-dob">
+      </div>
+      <div class="field">
+        <label>Target Year Date</label>
+        <input type="date" id="sy-year">
+      </div>
+    </div>
+    <div class="form-row single">
+      <button class="btn-generate" onclick="generateSubYearChart()">⊕ Generate Sub-Year Charts</button>
+    </div>
+    <div id="sy-error" class="error-msg" style="display:none"></div>
+  </div>
+
+  <div class="ornamental-divider">— ✦ —</div>
+
+  <div id="sy-charts" class="charts-area">
+    <div class="charts-area-inner">
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-ink"></div> Base numbers</div>
+        <div class="legend-item"><div class="legend-dot dot-red"></div> Dasha No.</div>
+        <div class="legend-item"><div class="legend-dot dot-blue"></div> Day/Cycle No.</div>
+      </div>
+      <div class="charts-scroll">
+        <div class="charts-grid" id="sy-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /content -->
+
+<script>
+
+function refreshModule(moduleName){
+
+if(moduleName==="numero"){
+window.location.href="/numerology"
+}
+
+else if(moduleName==="sutracard"){
+window.location.href="/sutracard"
+}
+
+else{
+window.location.href="/"
+}
+}
+
+// ================================================================
+// EXACT LOGIC PORTED FROM Birth.py and SubYear.py
+// ================================================================
+
+// Grid position matrix — EXACTLY as in source:
+// [[3,1,9],[6,7,5],[2,8,4]]
+const POSITION_MATRIX = [[3,1,9],[6,7,5],[2,8,4]];
+
+// Build value->position map
+const VALUE_TO_POS = {};
+POSITION_MATRIX.forEach((row, i) => {
+  row.forEach((val, j) => { VALUE_TO_POS[val] = [i, j]; });
+});
+
+// Weekday map (Python weekday: Mon=0 .. Sun=6) → numerology number
+const WEEK_MAP = {0:2, 1:9, 2:5, 3:3, 4:6, 5:8, 6:1};
+
+// ----------------------------------------------------------------
+// reduce_to_single_digits: keep summing digits until single digit
+// ----------------------------------------------------------------
+function reduceToSingle(x) {
+  x = Math.abs(Math.floor(x));
+  while (String(x).length !== 1) {
+    x = String(x).split('').reduce((a,d) => a + parseInt(d), 0);
+  }
+  return x;
+}
+
+// ----------------------------------------------------------------
+// calcBaseNumber — the DASHA NUMBER for a given year
+// Starts from base_no (birthday reduced) and baseYear (birth year),
+// expands window by 1 each time until targetYear falls in window
+// ----------------------------------------------------------------
+function calcBaseNumber(no_cardinal, baseYear, targetYear) {
+  baseYear = parseInt(baseYear);
+  targetYear = parseInt(targetYear);
+  while (true) {
+    const checkYear = no_cardinal + baseYear - 1;
+    if (baseYear <= targetYear && targetYear <= checkYear) break;
+    baseYear += no_cardinal;
+    no_cardinal += 1;
+    if (no_cardinal === 10) no_cardinal = 1;
+  }
+  if (no_cardinal !== 9) return no_cardinal % 9;
+  else return 9;
+}
+
+// ----------------------------------------------------------------
+// calcWeekNumber — returns {weekNum, weekName} for a date string YYYY-MM-DD
+// ----------------------------------------------------------------
+function calcWeekNumber(dateStr) {
+  // JS getDay(): Sun=0,Mon=1,...Sat=6
+  // Python weekday(): Mon=0,...Sun=6
+  // Convert: pythonWeekday = (jsDay + 6) % 7
+  const d = new Date(dateStr + 'T12:00:00');
+  const jsDay = d.getDay();
+  const pyDay = (jsDay + 6) % 7;
+  const weekNum = WEEK_MAP[pyDay];
+  const names = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const weekName = names[pyDay];
+  return { weekNum, weekName };
+}
+
+// ----------------------------------------------------------------
+// calcYearNumber — the YEAR NUMBER for a given year on birthday
+// ----------------------------------------------------------------
+function calcYearNumber(year, month, day, wno) {
+  const yearStr = String(year);
+  const yearc = parseInt(yearStr.slice(-2)); // last two digits
+  let year_no = yearc + parseInt(month) + parseInt(day) + wno;
+  year_no = reduceToSingle(year_no);
+  return year_no;
+}
+
+// ----------------------------------------------------------------
+// chartLogicLayer — builds number_list from a date (BIRTH date usually)
+// Returns {base_no, number_list}
+// ----------------------------------------------------------------
+function chartLogicLayer(year, month, day, isBirth=true) {
+  let number_list = [];
+
+  // CARDINAL NUMBER
+  let cardinal_no = reduceToSingle(year) + reduceToSingle(month) + reduceToSingle(day);
+  cardinal_no = reduceToSingle(cardinal_no);
+  number_list.push(cardinal_no);
+
+  const yearc = parseInt(String(year).slice(-2)); // last two digits
+
+  // DAY VALUE
+  let val = day;
+  if (String(val).length === 1) {
+    number_list.push(val);
+  } else {
+    if (isBirth) {
+      // Birth.py: push reduced val, then digits
+      val = reduceToSingle(val);
+      number_list.push(val);
+    } else {
+      // SubYear.py: push original if single (already handled), then push reduced
+      number_list.push(val); // push original day if 2-digit (SubYear variant)
+      val = reduceToSingle(val);
+      number_list.push(val);
+    }
+  }
+
+  let base_no = reduceToSingle(day); // base_no is always reduced day
+
+  // Digit explosion of day
+  const exc = [10, 20, 30];
+  let dayTmp = day;
+  if (String(dayTmp).length > 1 && !exc.includes(dayTmp)) {
+    if (dayTmp % 10 !== 0) number_list.push(dayTmp % 10);
+    dayTmp = Math.floor(dayTmp / 10);
+    if (dayTmp % 10 !== 0) number_list.push(dayTmp % 10);
+  }
+
+  // MONTH VALUE
+  val = month;
+  if (String(val).length === 1) {
+    number_list.push(val);
+  } else {
+    if (val % 10 !== 0) number_list.push(val % 10);
+    val = Math.floor(val / 10);
+    if (val % 10 !== 0) number_list.push(val % 10);
+  }
+
+  // YEAR VALUE (last two digits, digit by digit)
+  let yearcTmp = yearc;
+  if (yearcTmp % 10 !== 0) number_list.push(yearcTmp % 10);
+  yearcTmp = Math.floor(yearcTmp / 10);
+  if (yearcTmp % 10 !== 0) number_list.push(yearcTmp % 10);
+
+  number_list.push(base_no);
+
+  return { base_no, number_list };
+}
+
+// ----------------------------------------------------------------
+// addDays helper
+// ----------------------------------------------------------------
+function addDays(dateStr, days) {
+  const d = new Date(dateStr + 'T12:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+// ================================================================
+// BIRTH CHART GENERATION (Birth.py logic)
+// ================================================================
+function generateBirthChart() {
+  const dobVal   = document.getElementById('bc-dob').value;
+  const startVal = document.getElementById('bc-start').value;
+  const endVal   = document.getElementById('bc-end').value;
+  const errEl    = document.getElementById('bc-error');
+  errEl.style.display = 'none';
+
+  if (!dobVal || !startVal || !endVal) {
+    errEl.textContent = 'Please fill in all three dates.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const [dob_y, dob_m, dob_d] = dobVal.split('-').map(Number);
+  const dos_y = parseInt(startVal.split('-')[0]);
+  const doe_y = parseInt(endVal.split('-')[0]);
+
+  if (doe_y <= dos_y) {
+    errEl.textContent = 'End year must be after start year.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const mapList = [];
+
+  // BIRTH CHART
+  const { base_no: bno, number_list: nListRaw } = chartLogicLayer(dob_y, dob_m, dob_d, true);
+  let nList = [...nListRaw];
+  const { weekNum: wno, weekName: wname } = calcWeekNumber(dobVal);
+
+  // Remove base_no from nList (as per source)
+  const bnoIdx = nList.indexOf(bno);
+  if (bnoIdx !== -1) nList.splice(bnoIdx, 1);
+
+  mapList.push({
+    label: `Birth Chart  ${dob_d}-${dob_m}-${dob_y}\n${wname}`,
+    numbers: [...nList],
+    dashaIdx: null,
+    yearIdx: null,
+    isBirth: true
+  });
+
+  // YEARLY CHARTS
+  for (let yr = dos_y + 1; yr <= doe_y; yr++) {
+    const calcNumber = calcBaseNumber(bno, dob_y, yr); // dasha
+    const yrDateStr = `${yr}-${String(dob_m).padStart(2,'0')}-${String(dob_d).padStart(2,'0')}`;
+    const { weekNum: weekNumber, weekName } = calcWeekNumber(yrDateStr);
+    const yearNo = calcYearNumber(yr, dob_m, dob_d, weekNumber);
+
+    const yearIdx_pos = nList.length;
+    nList.push(calcNumber);
+    nList.push(yearNo);
+    const idx = nList.length;
+
+    mapList.push({
+      label: `${dob_d}-${dob_m}-${yr}\n${weekName}`,
+      numbers: [...nList],
+      dashaIdx: idx - 2,   // calcNumber position
+      yearIdx:  idx - 1,   // yearNo position
+      isBirth: false
+    });
+
+    nList.splice(nList.lastIndexOf(calcNumber), 1);
+    nList.splice(nList.lastIndexOf(yearNo), 1);
+  }
+
+  renderCharts('bc-grid', 'bc-charts', mapList, 'birth');
+}
+
+// ================================================================
+// SUB-YEAR CHART GENERATION (SubYear.py logic)
+// ================================================================
+function generateSubYearChart() {
+  const dobVal   = document.getElementById('sy-dob').value;
+  const yearVal  = document.getElementById('sy-year').value;
+  const errEl    = document.getElementById('sy-error');
+  errEl.style.display = 'none';
+
+  if (!dobVal || !yearVal) {
+    errEl.textContent = 'Please fill in both dates.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const [dob_y, dob_m, dob_d] = dobVal.split('-').map(Number);
+  const [dos_y, dos_m, dos_d] = yearVal.split('-').map(Number);
+
+  const mapList = [];
+
+  // BIRTH CHART (same as BirthChart)
+  const { base_no: bno, number_list: nListRaw } = chartLogicLayer(dob_y, dob_m, dob_d, false); // SubYear variant
+  let nList = [...nListRaw];
+  const { weekName: wname } = calcWeekNumber(dobVal);
+
+  mapList.push({
+    label: `Birth Chart  ${dob_d}-${dob_m}-${dob_y}\n${wname}`,
+    numbers: [...nList],
+    dashaIdx: null,
+    yearIdx: null,
+    isBirth: true
+  });
+
+  // Remove bno before year loop
+  const bnoIdx = nList.indexOf(bno);
+  if (bnoIdx !== -1) nList.splice(bnoIdx, 1);
+
+  // DASHA for target year
+  const calcNumber = calcBaseNumber(bno, dob_y, dos_y);
+  const yrDateStr = `${dos_y}-${String(dob_m).padStart(2,'0')}-${String(dob_d).padStart(2,'0')}`;
+  const { weekNum: weekNumber } = calcWeekNumber(yrDateStr);
+  const yearNo = calcYearNumber(dos_y, dob_m, dob_d, weekNumber);
+
+  // Sequence starting from yearNo
+  const nums = [1,2,3,4,5,6,7,8,9];
+  const startIdx = nums.indexOf(yearNo);
+  const sequence = [...nums.slice(startIdx), ...nums.slice(0, startIdx)];
+
+  nList.push(calcNumber);
+  nList.push(yearNo);
+
+  // BASE YEAR CHART
+  // (same as birth chart but with dasha+year highlighted)
+  // We show it as the first "year" entry
+
+  let startDateStr = yearVal; // the date entered
+
+  for (const i of sequence) {
+    const endDateStr = addDays(startDateStr, i * 8);
+    nList.push(i);
+    const idx = nList.length;
+
+    mapList.push({
+      label: `${fmtDate(startDateStr)}\n→ ${fmtDate(endDateStr)}`,
+      numbers: [...nList],
+      dashaIdx: idx - 2,  // calcNumber
+      yearIdx:  idx - 1,  // the current cycle number i (shown in blue for subyear)
+      isBirth: false,
+      isSubYear: true
+    });
+
+    const removeIdx = nList.lastIndexOf(i);
+    if (removeIdx !== -1) nList.splice(removeIdx, 1);
+    startDateStr = endDateStr;
+  }
+
+  renderCharts('sy-grid', 'sy-charts', mapList, 'subyear');
+}
+
+// ================================================================
+// RENDER CHARTS
+// ================================================================
+function renderCharts(gridId, areaId, mapList, mode) {
+  const grid = document.getElementById(gridId);
+  const area = document.getElementById(areaId);
+  grid.innerHTML = '';
+
+  mapList.forEach((entry, entryIdx) => {
+    const { label, numbers, dashaIdx, yearIdx, isBirth, isSubYear } = entry;
+    const card = document.createElement('div');
+    card.className = 'chart-card ' + (isBirth ? 'birth-card' : (mode === 'subyear' ? 'sy-card' : ''));
+    card.style.animationDelay = (entryIdx * 0.04) + 's';
+
+    // Date label
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'chart-date';
+    dateDiv.textContent = label;
+    card.appendChild(dateDiv);
+
+    // Build 3x3 grid
+    // Cells: {[row][col]: [{val, type}]}
+    const cells = {};
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        cells[`${r},${c}`] = [];
+      }
+    }
+
+    const usedSet = new Set();
+    numbers.forEach((val, idx_val) => {
+      if (val in VALUE_TO_POS) {
+        const [r, c] = VALUE_TO_POS[val];
+        const key = `${r},${c},${idx_val}`;
+        if (!usedSet.has(key)) {
+          let type = 'normal';
+          if (idx_val === dashaIdx) type = 'dasha';
+          else if (idx_val === yearIdx) type = 'year';
+          cells[`${r},${c}`].push({ val, type });
+          usedSet.add(key);
+        }
+      }
+    });
+
+    // Build the visual grid
+    const gridEl = document.createElement('div');
+    gridEl.className = 'num-grid';
+
+    POSITION_MATRIX.forEach((row, r) => {
+      row.forEach((posNum, c) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+
+        const posLabel = document.createElement('span');
+        posLabel.className = 'cell-pos';
+        posLabel.textContent = posNum;
+        cell.appendChild(posLabel);
+
+        const numsEl = document.createElement('div');
+        numsEl.className = 'cell-nums';
+
+        const entries = cells[`${r},${c}`];
+        if (entries.length > 0) {
+          entries.forEach((e, ei) => {
+            if (ei > 0) {
+              const sep = document.createElement('span');
+              sep.textContent = ', ';
+              sep.style.color = '#999';
+              numsEl.appendChild(sep);
+            }
+            const span = document.createElement('span');
+            span.className = `n-${e.type}`;
+            span.textContent = e.val;
+            numsEl.appendChild(span);
+          });
+        }
+
+        cell.appendChild(numsEl);
+        gridEl.appendChild(cell);
+      });
+    });
+
+    card.appendChild(gridEl);
+
+    // Footer: dasha / year labels
+    if (!isBirth) {
+      const footer = document.createElement('div');
+      footer.className = 'chart-footer';
+      const dNum = dashaIdx !== null ? numbers[dashaIdx] : '-';
+      const yNum = yearIdx  !== null ? numbers[yearIdx]  : '-';
+
+      if (mode === 'subyear') {
+        footer.innerHTML = `<span class="lbl-dasha">Dasha: ${dNum}</span> &nbsp;·&nbsp; <span class="lbl-day">Cycle: ${yNum}</span>`;
+      } else {
+        footer.innerHTML = `<span class="lbl-dasha">Dasha No: ${dNum}</span> &nbsp;·&nbsp; <span class="lbl-year">Year No: ${yNum}</span>`;
+      }
+      card.appendChild(footer);
+    }
+
+    grid.appendChild(card);
+  });
+
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ================================================================
+// TAB SWITCHING
+// ================================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function printNumerology(){
+
+    document
+        .querySelectorAll('.charts-area')
+        .forEach(x => x.classList.add('visible'));
+
+    window.print();
+}
+// ----------------------------------------------------------------
+// Pre-fill dates with sensible defaults
+// ----------------------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+
+  document.getElementById('bc-start').value = `${yyyy-1}-01-01`;
+  document.getElementById('bc-end').value   = `${yyyy+5}-12-31`;
+  document.getElementById('sy-year').value  = todayStr;
+});
+</script>
+</body>
+</html>

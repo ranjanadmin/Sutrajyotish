@@ -1,0 +1,178 @@
+
+body{
+    margin:0;
+    padding:0;
+    background:#e4d2ab;
+    font-family:Tahoma, Arial, sans-serif;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.transit-main{
+    display:flex;
+    width:100vw;
+    min-height:100vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    background:#e4d2ab;
+}
+
+.chart-section{
+    width:930px;
+    background:#f4f1df;
+    border-right:1px solid #777;
+    display:flex;
+    flex-direction:column;
+}
+
+#transitChart{
+    width:920px;
+    height:760px;
+    background:#f4f1df;
+    border:2px solid #264dff;
+    position:relative;
+}
+
+.right-section{
+    width:650px;
+    background:#dce8d5;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    overflow-y:auto;
+}
+
+.table-panel{
+    min-height:420px;
+    border-bottom:1px solid #777;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.panel-title{
+    text-align:center;
+    font-weight:bold;
+    color:#0a2c8f;
+    padding:4px;
+    background:#efe4c5;
+    border-bottom:1px solid #888;
+    font-size:18px;
+}
+
+#transitTable table,
+#natalTable table{
+    width:100%;
+    border-collapse:collapse;
+    background:#dce8d5;
+}
+
+#transitTable th,
+#transitTable td,
+#natalTable th,
+#natalTable td{
+    border:1px solid #666;
+    padding:4px;
+    text-align:center;
+    font-size:14px;
+}
+
+#transitTable th,
+#natalTable th{
+    background:#f3ecd2;
+    color:#111;
+}
+
+.button-panel{
+    width:190px;
+    background:#d3d3d3;
+    display:flex;
+    flex-direction:column;
+    padding:2px;
+    border-left:1px solid #777;
+}
+
+.button-panel button{
+    height:48px;
+    margin:1px 0;
+    border:1px solid #777;
+    background:#d6d6d6;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.button-panel button:hover{
+    background:#ececec;
+}
+
+.transit-footer{
+    background:#e4d2ab;
+    padding:8px 10px;
+    border-top:1px solid #777;
+}
+
+.footer-top{
+    margin-bottom:8px;
+}
+
+#transitDateTime{
+    font-size:18px;
+    font-weight:bold;
+    color:#082c9c;
+    margin-bottom:10px;
+}
+
+#transitDasaStatus{
+    font-size:18px;
+    font-weight:bold;
+    color:#000099;
+}
+
+.footer-controls{
+    display:flex;
+    width:100%;
+}
+
+.footer-controls button{
+    flex:1;
+    height:52px;
+    border:1px solid #888;
+    background:#dddddd;
+    font-size:18px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.footer-controls button:hover{
+    background:#f0f0f0;
+}
+
+
+.transit-header{
+
+    height:28px;
+
+    background:#efefef;
+
+    border-bottom:1px solid #888;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 8px;
+
+    font-size:16px;
+
+    font-family:Tahoma;
+
+    color:#000;
+}
+
+.software-name{
+
+    font-weight:bold;
+
+    margin-right:8px;
+}
+

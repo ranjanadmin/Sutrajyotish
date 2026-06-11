@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SutraJyotish Transit Workspace</title>
+    <link rel="stylesheet" href="/static/css/transit.css">
+</head>
+<body>
+
+<div class="transit-main">
+
+    <div class="chart-section">
+
+        <div id="transitChart"></div>
+
+        <div class="transit-footer">
+
+           <div class="footer-top">
+
+              <div id="transitDateTime">
+                    25/05/2026 12:52:15
+        </div>
+
+        <div id="transitDasaStatus">
+            <div id="transitDasaStatus"></div>
+        </div>
+
+    </div>
+
+    <div class="footer-controls">
+
+        <button id="btnStepBack">
+            Backward<br>One Step
+        </button>
+
+        <button id="btnStepForward">
+            Forward<br>One Step
+        </button>
+
+        <button onclick="window.close()">
+            CLOSE
+        </button>
+
+    </div>
+
+</div>
+            <div id="transitDateTime">
+                25/05/2026 10:42:16
+            </div>
+
+            <div id="transitDasaStatus">
+                Vimshottari Dasa : Loading...
+            </div>
+        </div>
+
+    </div>
+
+    <div class="right-section">
+
+        <div class="table-panel">
+
+            <div class="panel-title">
+                Current Planet Position
+            </div>
+
+            <div id="transitTable"></div>
+
+        </div>
+
+        <div class="table-panel">
+
+            <div class="panel-title">
+                Planet Position At Birth Time
+            </div>
+
+            <div id="natalTable"></div>
+
+        </div>
+
+    </div>
+
+    <div class="button-panel">
+
+        <button id="btnFast">Fast</button>
+        <button id="btnSlow">Slow</button>
+        <button id="btnEnd">End</button>
+        <button id="btnReverse">Reverse</button>
+        <button id="btnForward">Forward</button>
+        <button id="btnStart">Start</button>
+        <button id="btnPause">Pause</button>
+        <button id="btnReplay">Replay</button>
+        <button id="btnRealTime">Real Time</button>
+        <button id="btnHourly">Hourly</button>
+        <button id="btnDaily">Daily</button>
+        <button id="btnWeekly">Weekly</button>
+        <button id="btnMonthly">Monthly</button>
+        <button id="btnYearly">Yearly</button>
+        <button id="btnSetDate">Set Date</button>
+
+    </div>
+
+</div>
+
+<script src="/static/js/chart.js"></script>
+
+<script>
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        if(window.loadTransitData){
+            loadTransitData();
+        }
+    }
+);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SutraJyotish Workspace</title>
+    <link rel="stylesheet" href="/static/css/workspace.css">
+</head>
+<body>
+
+<div class="workspace-container">
+
+    <div class="top-section">
+
+        <div class="chart-box">
+            <div class="panel-title">Lagna Chart</div>
+            <div id="lagnaChart"></div>
+        </div>
+
+        <div class="chart-box">
+            <div class="panel-title">Bhav Chalit</div>
+            <div id="bhavChart"></div>
+        </div>
+
+        <div class="right-panel">
+
+            <div class="dasa-panel">
+                <div class="panel-title">Vimshottari Dasa</div>
+                <div id="dasaNavigator"></div>
+            </div>
+
+            <div class="details-panel">
+                <div class="detail-row">
+                    <span>Date of Birth</span>
+                    <span id="dobValue"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span>Latitude</span>
+                    <span id="latValue"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span>Longitude</span>
+                    <span id="lonValue"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span>Sidereal Time</span>
+                    <span id="siderealValue"></span>
+                </div>
+            </div>
+
+            <div class="ruling-panel">
+                <div class="panel-title">Ruling Planets</div>
+                <div id="rulingPlanets"></div>
+            </div>
+
+            <div class="time-tool-panel">
+
+                <div class="panel-title">
+                    Time Tool
+                </div>
+
+                <div class="time-tool-grid">
+
+                    <div class="time-row">
+                        <span>1 Day</span>
+                        <button onclick="adjustBirthTime('day',1)">+</button>
+                        <button onclick="adjustBirthTime('day',-1)">-</button>
+                    </div>
+
+                    <div class="time-row">
+                        <span>1 Hour</span>
+                        <button onclick="adjustBirthTime('hour',1)">+</button>
+                        <button onclick="adjustBirthTime('hour',-1)">-</button>
+                    </div>
+
+                    <div class="time-row">
+                        <span>10 Minute</span>
+                        <button onclick="adjustBirthTime('minute10',1)">+</button>
+                        <button onclick="adjustBirthTime('minute10',-1)">-</button>
+                    </div>
+
+                    <div class="time-row">
+                        <span>1 Minute</span>
+                        <button onclick="adjustBirthTime('minute1',1)">+</button>
+                        <button onclick="adjustBirthTime('minute1',-1)">-</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="grid-section">
+
+        <div class="panel-title">
+            Sutra Grid
+        </div>
+
+        <table id="sutraGrid" class="sutra-grid-table">
+            <thead>
+                <tr>
+                    <th>Planet</th>
+                    <th>Planet Houses</th>
+                    <th>Star Lord</th>
+                    <th>Star Houses</th>
+                    <th>Sub Lord</th>
+                    <th>Sub Houses</th>
+                </tr>
+            </thead>
+
+            <tbody id="sutraGridBody"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<script src="/static/js/chart.js"></script>
+<script src="/static/js/workspace.js"></script>
+
+</body>
+</html>

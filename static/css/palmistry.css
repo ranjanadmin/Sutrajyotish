@@ -1,0 +1,105 @@
+     html,
+     body{
+       height:100%;
+     }
+
+     body{
+        margin:0;
+        font-family:Segoe UI,Arial,sans-serif;
+        background:#0b1c2c;
+        color:white;
+        }
+
+       .workspace{
+             display:grid;
+             grid-template-columns:260px minmax(0,1fr) 320px;
+             flex:1;
+             min-height:0;
+             gap:10px;
+             padding:10px;
+      }
+     
+        .header {
+            background: #0d2438;
+            padding: 10px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+        }
+
+        button {
+            background: #1e2a38;
+            color: white;
+            border: 1px solid #3a4a5a;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        button.active {
+            background: #00bcd4;
+            color: black;
+        }
+
+        canvas{
+          display:block;
+           width:100%;
+           height:100%;
+           background:black;
+       }
+
+       
+ .tools-panel,
+ .analysis-panel{
+    background:#102438;
+    padding:10px;
+    overflow:auto;
+}
+
+.palm-panel{
+    background:#081c33;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.canvas-toolbar{
+    padding:8px;
+    border-bottom:1px solid #30425c;
+}
+
+.session-toolbar{
+    display:flex;
+    gap:8px;
+    padding:10px;
+    justify-content:center;
+    border-top:1px solid #30425c;
+}
+.app-container{
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}  
+.palm-panel{
+    min-width:0;
+}
+input[type="file"]{
+    width:100%;
+    margin-bottom:10px;
+}
+.canvas-wrapper{
+    flex:1;
+    min-height:600px;
+    position:relative;
+    overflow:hidden;
+    background:#000;
+    border-top:1px solid #345;
+}
+   

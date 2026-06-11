@@ -1,0 +1,77 @@
+
+#transit {
+    background: #e7d7b5;
+    padding: 10px;
+}
+
+.transit-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+#transitChart {
+    width: 920px;
+    height: 740px;
+    background: #f4f2e6;
+    border: 2px solid blue;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-rows: repeat(4,1fr);
+}
+
+#transitChart .box {
+    border: 1px solid blue;
+    background: #f8f7ec;
+    color: #000;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    padding-top: 12px;
+    white-space: pre-line;
+}
+
+.transit-right {
+    width: 640px;
+    background: #dce9d8;
+    border: 1px solid #888;
+}
+
+.transit-panel-title {
+    font-weight: bold;
+    color: navy;
+    padding: 8px;
+}
+
+#transitTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: #dce9d8;
+}
+
+#transitTable th,
+#transitTable td {
+    border: 1px solid #888;
+    padding: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.transit-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 180px;
+}
+
+.transit-controls button {
+    padding: 14px;
+    font-weight: bold;
+    border: 1px solid #777;
+    background: #d7d7d7;
+    cursor: pointer;
+}
+
+.transit-controls button:hover {
+    background: #ececec;
+}
