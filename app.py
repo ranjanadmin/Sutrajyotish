@@ -29,7 +29,9 @@ from engine.dasa_decision_engine import (
 import pytz
 import os
 import json
-
+import razorpay
+import hmac
+import hashlib
 
 from geopy.geocoders import Nominatim
 
@@ -46,7 +48,20 @@ from flask_session import Session
 
 app = Flask(__name__)
 CORS(app)
+# -------------------------------
+# RAZORPAY
+# -------------------------------
 
+razorpay_client = razorpay.Client(
+    auth=(
+        os.environ.get(
+            "RAZORPAY_KEY_ID"
+        ),
+        os.environ.get(
+            "RAZORPAY_KEY_SECRET"
+        )
+    )
+)
 app.secret_key = "sutrajyotish_kp_secret_2026"
 
 # -------------------------------
@@ -2140,7 +2155,136 @@ def api_profession_prediction():
             "error": str(e)
 
         })
+# -------------------------------
+# CREATE ORDER API
+# -------------------------------
 
+@app.route(
+    "/api/create_order",
+    methods=["POST"]
+)
+def create_order():
+
+    try:
+
+        data = request.get_json()
+
+        amount = int(
+            data.get(
+                "amount",
+                99
+            )
+        )
+
+        order = razorpay_client.order.create({
+
+            "amount":
+                amount * 100,
+
+            "currency":
+                "INR",
+
+            "payment_capture":
+                1
+        })
+
+        return jsonify({
+
+            "success": True,
+
+            "order_id":
+                order["id"],
+
+            "amount":
+                order["amount"]
+
+        })
+
+    except Exception as e:
+
+        return jsonify({
+
+            "success": False,
+
+            "error":
+                str(e)
+
+        }), 500
+        
+        # -------------------------------
+# VERIFY PAYMENT API
+# -------------------------------
+
+@app.route(
+    "/api/verify_payment",
+    methods=["POST"]
+)
+def verify_payment():
+
+    try:
+
+        data = request.get_json()
+
+        order_id = data.get(
+            "razorpay_order_id"
+        )
+
+        payment_id = data.get(
+            "razorpay_payment_id"
+        )
+
+        signature = data.get(
+            "razorpay_signature"
+        )
+
+        secret = os.environ.get(
+            "RAZORPAY_KEY_SECRET"
+        )
+
+        body = (
+            f"{order_id}|{payment_id}"
+        )
+
+        generated_signature = hmac.new(
+
+            bytes(
+                secret,
+                "utf-8"
+            ),
+
+            bytes(
+                body,
+                "utf-8"
+            ),
+
+            hashlib.sha256
+
+        ).hexdigest()
+
+        if generated_signature == signature:
+
+            return jsonify({
+
+                "success": True
+
+            })
+
+        return jsonify({
+
+            "success": False
+
+        }), 400
+
+    except Exception as e:
+
+        return jsonify({
+
+            "success": False,
+
+            "error":
+                str(e)
+
+        }), 500
 # -------------------------------
 # RUN
 # -------------------------------

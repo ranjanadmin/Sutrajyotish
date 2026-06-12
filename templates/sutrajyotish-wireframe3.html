@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SUTRAJYOTISH - Profession Prediction Engine</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .screen {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 24px;
+      display: none;
+    }
+    .screen.active {
+      display: block;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    .logo-img {
+      width: 80px;
+      height: 80px;
+      background: #F8F6F1;
+      border-radius: 50%;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 16px 0 8px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+    .link {
+      color: #3498db;
+      text-decoration: none;
+      font-size: 14px;
+      display: block;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .question-list {
+      margin: 20px 0;
+      border-top: 1px solid #ecf0f1;
+      border-bottom: 1px solid #ecf0f1;
+      padding: 16px 0;
+    }
+    .question {
+      padding: 10px 0;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    .features {
+      margin: 20px 0;
+    }
+    .feature {
+      padding: 8px 0;
+      color: #27ae60;
+      font-size: 14px;
+    }
+    .offer {
+      background: #fff3cd;
+      border: 1px solid #ffecb5;
+      padding: 16px;
+      margin: 20px 0;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .offer-price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #e67e22;
+      margin: 8px 0;
+    }
+    .offer-details {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin: 8px 0;
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 20px 0;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+    .btn-secondary {
+      background: #27ae60;
+    }
+    .btn-secondary:hover {
+      background: #219150;
+    }
+    .disclaimer {
+      font-size: 12px;
+      color: #95a5a6;
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.4;
+    }
+    .step {
+      text-align: center;
+      font-size: 14px;
+      color: #7f8c8d;
+      margin: 16px 0;
+    }
+    .form-group {
+      margin: 16px 0;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .radio-group {
+      margin: 16px 0;
+    }
+    .radio-item {
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .radio-item.selected {
+      background: #3498db;
+      color: white;
+      border-color: #2980b9;
+    }
+    .fee {
+      text-align: center;
+      font-size: 18px;
+      color: #2c3e50;
+      margin: 20px 0;
+    }
+    .fee-price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e67e22;
+    }
+    .payment-powered {
+      text-align: center;
+      font-size: 12px;
+      color: #95a5a6;
+      margin-top: 12px;
+    }
+    .payment-success {
+      text-align: center;
+      padding: 30px 0;
+    }
+    .success-icon {
+      font-size: 48px;
+      color: #27ae60;
+      margin-bottom: 16px;
+    }
+    .transaction-id {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin: 16px 0;
+    }
+    .instructions {
+      background: #e8f4f8;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .instructions li {
+      padding: 6px 0;
+      margin: 6px 0;
+    }
+    .important {
+      background: #fff3cd;
+      border: 1px solid #ffecb5;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #8a6d3b;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .grid-item {
+      padding: 12px;
+      background: #f8f9f9;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .grid-item.selected {
+      background: #3498db;
+      color: white;
+      border-color: #2980b9;
+    }
+    .selected-number {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 16px;
+      color: #2c3e50;
+    }
+    .selected-number span {
+      font-size: 28px;
+      font-weight: bold;
+      color: #3498db;
+      margin-left: 8px;
+    }
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: #ecf0f1;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #3498db;
+      width: 0%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    .progress-steps {
+      margin: 20px 0;
+    }
+    .progress-step {
+      padding: 8px 0;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+    .progress-step.checked {
+      color: #27ae60;
+    }
+    .progress-step:before {
+      content: "✓ ";
+      color: #27ae60;
+      display: none;
+    }
+    .progress-step.checked:before {
+      display: inline;
+    }
+    .result-section {
+      margin: 20px 0;
+      padding: 16px;
+      background: #f8f9f9;
+      border-radius: 8px;
+    }
+    .result-label {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-bottom: 8px;
+    }
+    .result-value {
+      font-size: 18px;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .result-text {
+      font-size: 15px;
+      color: #2c3e50;
+      line-height: 1.5;
+    }
+    .consultation {
+      margin: 24px 0;
+      text-align: center;
+    }
+    .consultation-text {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 12px;
+    }
+    .logo-img{
+      width:120px;
+      height:auto;
+      border-radius:0;
+      background:none;
+   }
+   @media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+    overflow-x: hidden;
+    align-items: flex-start;
+  }
+
+  .screen {
+    max-width: 100%;
+    width: 100%;
+    margin: 10px auto;
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .logo-img {
+    width: 90px;
+  }
+}
+ </style>
+</head>
+<body>
+
+  <!-- Screen 1: Landing Page -->
+  <div class="screen active" id="screen1">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH </div>
+      <img
+        src="/wp-content/uploads/sutrajyotish-logo.png"
+        class="logo-img"
+        alt="SutraJyotish">
+      
+    </div>
+    <div class="title">Profession Prediction Engine™</div>
+<div class="subtitle">
+    AI + SutraJyotish Astrology Analysis
+</div>
+<a href="https://www.sutrajyotish.com" class="link">
+    www.sutrajyotish.com
+</a>
+<div class="question">
+    Discover Career Opportunities Over The Next 24 Months
+</div>
+
+<div class="question">
+    Identify Potential Growth Windows In Your Professional Journey
+</div>
+
+<div class="question">
+    Gain Clarity On Career Direction, Timing And Opportunities
+</div>
+
+<div class="feature">
+    ✓ Promotion Prospects Analysis
+</div>
+
+<div class="feature">
+    ✓ Job Change Opportunity Assessment
+</div>
+
+<div class="feature">
+    ✓ New Employment Potential
+</div>
+
+<div class="feature">
+    ✓ 24-Month Career Timeline Scan
+</div>
+
+<div class="feature">
+    ✓ Best Opportunity Window Identification
+</div>
+
+<div class="feature">
+    ✓ AI + SutraJyotish Astrology Analysis
+</div>
+
+<div class="important">
+
+<strong>
+Why Use The Profession Prediction Engine™?
+</strong>
+
+<br><br>
+
+Career success is influenced by both effort
+and timing. The Profession Prediction Engine™
+helps identify potential opportunity windows,
+career growth periods and professional
+transition phases through AI + SutraJyotish
+Astrology Analysis.
+
+</div>    
+    <div class="offer">
+      <div>SOFT LAUNCH OFFER</div>
+      <div class="offer-price" id="offerPrice"></div>
+     <div class="offer-details">
+
+       ✓ One Career Question<br>
+       ✓ One Horary Number<br>
+       ✓ One Prediction Report<br>
+      ✓ 24-Month Opportunity Outlook
+
+     </div>
+   </div>
+    
+    <button class="btn" onclick="goToScreen('screen2')">GET MY CAREER ANALYSIS ₹99</button>
+    
+    <div class="disclaimer">
+      Disclaimer: This analysis is probabilistic and should not be considered financial, employment, legal, medical or investment advice.
+    </div>
+  </div>
+
+  <!-- Screen 2: Customer Information + Payment -->
+  <div class="screen" id="screen2">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH</div>
+    </div>
+    
+    <div class="title">Profession Prediction Engine™</div>
+    <div class="step">Step 1 of 3</div>
+    
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" id="nameInput" placeholder="Your full name">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="emailInput" placeholder="your@email.com">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Mobile</label>
+      <input type="tel" class="form-input" id="mobileInput" placeholder="+91 XXXXX XXXXX">
+    </div>
+    
+    <div class="form-label">Select Your Question</div>
+    <div class="radio-group">
+      <div class="radio-item"
+         onclick="selectRadio(this,'question')">
+         Will I get promoted?
+      </div>
+      <div class="radio-item"
+         onclick="selectRadio(this,'question')">
+         Will I change my job?
+      </div>
+      <div class="radio-item"
+         onclick="selectRadio(this,'question')">
+         Will I get a new job?
+      </div>
+    </div>
+    
+    <div class="fee">
+      Analysis Fee<br>
+      <span class="fee-price" id="feePrice"></span>
+    </div>
+    
+  <button
+   class="btn"
+   id="landingBtn"
+   onclick="proceedToPayment()">
+  </button>
+    <div class="payment-powered">Powered by Razorpay</div>
+  </div>
+
+  <!-- Payment Success Page -->
+  <div class="screen" id="paymentSuccess">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH</div>
+    </div>
+    
+    <div class="payment-success">
+      <div class="success-icon">✓</div>
+      <div class="title">Payment Successful</div>
+      <div class="transaction-id">
+         Transaction ID:
+         <span id="transactionId"></span>
+      </div>
+      
+      <div style="margin: 20px 0; color: #7f8c8d;">Proceed To Horary Selection</div>
+      <button class="btn btn-secondary" onclick="goToScreen('screen3')">CONTINUE</button>
+    </div>
+  </div>
+
+  <!-- Screen 3: Horary Number Selection -->
+  <div class="screen" id="screen3">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH</div>
+    </div>
+    
+    <div class="title">Profession Prediction Engine™</div>
+    <div class="step">Step 2 of 3</div>
+    
+    <div class="instructions">
+      <strong>How To Select Your Horary Number</strong>
+      <ol style="margin: 12px 0; padding-left: 20px;">
+        <li>Focus on your question.</li>
+        <li>Do not calculate.</li>
+        <li>Do not analyse.</li>
+        <li>Trust your intuition.</li>
+        <li>Select ONE number.</li>
+        <li>Number cannot be changed.</li>
+      </ol>
+    </div>
+    
+    <div class="important">
+      <strong>IMPORTANT</strong><br>
+      The sincerity of the question and spontaneous selection of the number are important elements of Horary Astrology.
+    </div>
+    
+    <div class="form-label" style="text-align: center; margin: 24px 0;">Select Your Horary Number</div>
+    
+    <div class="grid" id="numberGrid">
+      <!-- Grid items will be generated by JavaScript -->
+    </div>
+    
+    <div class="selected-number">
+      Selected: <span id="selectedNumberDisplay">-</span>
+    </div>
+    
+    <button
+       class="btn"
+       id="generateBtn"
+       onclick="generatePrediction()"
+       style="opacity:0.5;pointer-events:none;">
+       GENERATE PREDICTION
+    </button>
+  </div>
+
+  <!-- Screen 4: Processing -->
+  <div class="screen" id="screen4">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH</div>
+    </div>
+    
+    <div class="title">Profession Prediction Engine™</div>
+    <div class="step">Step 3 of 3</div>
+    
+    <div class="title" style="text-align: center; margin: 30px 0;">Generating Career Analysis</div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="progress-steps">
+      <div class="progress-step" id="step1">Analyzing Horary Number</div>
+      <div class="progress-step" id="step2">Generating Prediction Matrix</div>
+      <div class="progress-step" id="step3">Evaluating Career Indicators</div>
+      <div class="progress-step" id="step4">Scanning 24-Month Timeline</div>
+     <div class="progress-step" id="step5">Preparing Report</div>
+    </div>
+    
+    <div style="text-align: center; color: #7f8c8d; margin-top: 20px;">Please wait...</div>
+  </div>
+
+  <!-- Screen 5: Result Page -->
+  <div class="screen" id="screen5">
+    <div class="header">
+      <div class="logo">SUTRAJYOTISH</div>
+    </div>
+    
+    <div class="title">Profession Prediction Engine™</div>
+    <div class="subtitle">AI + SutraJyotish Astrology Analysis</div>
+    
+    <div class="result-section">
+      <div class="result-label">Question</div>
+      <div id="resultQuestion"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Prediction</div>
+     <div class="result-value" id="predictionResult"></div>
+     <div id="careerScoreResult"></div>
+    </div>
+    
+  <div id="dbaResult"></div>
+    <div class="result-section">
+      <div class="result-label">Confidence</div>
+      <div class="result-value" id="confidenceResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Best Window</div>
+      <div class="result-value" id="bestWindowResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Career Promise</div>
+     <div class="result-text" id="careerPromiseResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Current Outlook</div>
+     <div class="result-text" id="currentOutlookResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Positive Indicators</div>
+      <div class="result-text" id="positiveIndicatorsResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">Challenges</div>
+      <div class="result-text" id="challengesResult"></div>
+    </div>
+    
+    <div class="result-section">
+      <div class="result-label">24 Month Outlook</div>
+      <div class="result-text" id="outlook24MonthResult"></div>
+    </div>
+    <div class="important">
+
+    <strong>
+     Need Personal Guidance?
+    </strong>
+
+    <br><br>
+
+    The Profession Prediction Engine™ provides
+    an automated career outlook based on your
+    selected horary number and question.
+    For detailed guidance on promotion,
+    job change, employment opportunities,
+    career timing, business decisions and
+    professional planning, you may book a
+    personal consultation.
+
+    </div>
+    <div class="consultation-text">
+
+     Discuss Your Career Situation
+     With SutraJyotish®
+
+   </div>
+    <button
+      class="btn btn-secondary"
+      onclick="window.open('https://sutrajyotish.com/consultation-services/','_blank')">
+      BOOK PERSONAL CONSULTATION
+    </button>
+    </div>
+    
+    <a
+      href="https://sutrajyotish.com/consultation-services/"
+      class="link"
+      target="_blank">
+
+      View Consultation Services
+
+  </a>
+      
+  </div>
+
+  <script>
+  const CONFIG = {
+
+    PRICE: 99,
+
+    WEBSITE:
+        "https://www.sutrajyotish.com",
+};
+let sessionData =
+    JSON.parse(
+        localStorage.getItem(
+            "sutraProfessionSession"
+        )
+    ) || {
+
+        name: "",
+        email: "",
+        mobile: "",
+
+        question: "",
+
+        paymentId: "",
+
+        horaryNumber: "",
+
+        prediction: null,
+
+        createdAt:
+            new Date().toISOString()
+    };
+    // Screen navigation
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+      
+      // If going to screen 4, show it after simulation
+      if (screenId === 'screen4') {
+        simulateProcessing();
+      }
+    }
+    
+    // Radio button selection
+    function selectRadio(element, type) {
+      if (type === 'question') {
+        document.querySelectorAll('.radio-item').forEach(item => {
+          item.classList.remove('selected');
+        });
+        element.classList.add('selected');
+      }
+    }
+    
+    // Proceed to payment
+   function proceedToPayment() {
+
+    const name =
+        document.getElementById(
+            'nameInput'
+        ).value.trim();
+
+    const email =
+        document.getElementById(
+            'emailInput'
+        ).value.trim();
+
+    const mobile =
+        document.getElementById(
+            'mobileInput'
+        ).value.trim();
+
+    const questionSelected =
+        document.querySelector(
+            '.radio-item.selected'
+        );
+
+    // Validation First
+
+    if (
+        !name ||
+        !email ||
+        !mobile ||
+        !questionSelected
+    ) {
+
+        alert(
+            'Please fill all fields and select a question'
+        );
+
+        return;
+    }
+
+    // Save Session
+
+    sessionData.name =
+        name;
+
+    sessionData.email =
+        email;
+
+    sessionData.mobile =
+        mobile;
+
+    sessionData.question =
+        questionSelected.textContent.trim();
+
+    localStorage.setItem(
+        "sutraProfessionSession",
+        JSON.stringify(sessionData)
+    );
+
+    // Temporary Payment Success
+    // Replace with Razorpay later
+
+    goToScreen(
+        'paymentSuccess'
+    );
+
+    document.getElementById(
+        "transactionId"
+    ).innerText =
+        "TEST-PAYMENT-ID";
+}
+    
+    // Generate number grid
+   function generateNumberGrid() {
+
+    const grid =
+        document.getElementById("numberGrid");
+
+    grid.innerHTML = "";
+
+    const numbers =
+        [...Array(249).keys()]
+        .map(x => x + 1);
+
+    numbers.sort(() => Math.random() - 0.5);
+
+    numbers.forEach(number => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "grid-item";
+
+        div.textContent = number;
+
+        div.onclick = () =>
+            selectNumber(div, number);
+
+        grid.appendChild(div);
+
+    });
+}
+    
+    // Select number
+   async function selectNumber(
+    element,
+    number
+)
+{
+    document.querySelectorAll('.grid-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+
+    element.classList.add('selected');
+
+    document.getElementById(
+        'selectedNumberDisplay'
+    ).textContent = number;
+
+    document.getElementById(
+        'generateBtn'
+    ).style.opacity = '1';
+
+    document.getElementById(
+        'generateBtn'
+    ).style.pointerEvents = 'auto';
+
+    sessionData.horaryNumber =
+        number;
+
+    localStorage.setItem(
+        "sutraProfessionSession",
+        JSON.stringify(sessionData)
+    );
+}
+    
+    async function generatePrediction()
+{
+    goToScreen('screen4');
+
+    try {
+
+        const response = await fetch(
+          "https://sutrajyotish-api.onrender.com/api/profession_prediction",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    horary_number:
+                        sessionData.horaryNumber,
+
+                    question:
+                        sessionData.question,
+
+                    name:
+                        sessionData.name,
+
+                    email:
+                        sessionData.email,
+
+                    mobile:
+                        sessionData.mobile
+                })
+            }
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Prediction API failed"
+            );
+
+        }
+
+        const result =
+            await response.json();
+
+        console.log(
+            "Prediction Result:",
+            result
+        );
+
+        populateResults(result);
+
+        goToScreen(
+            'screen5'
+        );
+
+    }
+    catch(error)
+    {
+        console.error(error);
+
+        alert(
+            "Prediction generation failed."
+        );
+    }
+}
+    // Simulate processing
+    function simulateProcessing() {
+      const progressBar = document.getElementById('progressBar');
+      const steps = ['step1', 'step2', 'step3', 'step4', "step5"];
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 25 && !document.getElementById(steps[0]).classList.contains('checked')) {
+          document.getElementById(steps[0]).classList.add('checked');
+        }
+        if (progress >= 50 && !document.getElementById(steps[1]).classList.contains('checked')) {
+          document.getElementById(steps[1]).classList.add('checked');
+        }
+        if (progress >= 75 && !document.getElementById(steps[2]).classList.contains('checked')) {
+          document.getElementById(steps[2]).classList.add('checked');
+        }
+       if (progress >= 90) {
+          document.getElementById(steps[3]).classList.add('checked');
+        }
+
+    if (progress >= 100) {
+
+    document.getElementById(
+        steps[4]
+    ).classList.add('checked');
+
+    clearInterval(interval);
+
+    setTimeout(() => {
+
+        document.getElementById(
+            'resultQuestion'
+        ).textContent =
+            sessionData.question;
+
+    }, 500);
+}
+
+}, 200);
+
+}
+function populateResults(result)
+{
+    document.getElementById(
+        "predictionResult"
+    ).innerText =
+        result.prediction || "";
+
+    document.getElementById(
+        "confidenceResult"
+    ).innerText =
+        result.confidence || "";
+
+    document.getElementById(
+        "bestWindowResult"
+    ).innerText =
+        result.best_window || "";
+
+    document.getElementById(
+        "careerScoreResult"
+    ).innerText =
+        result.career_score || "";
+
+    document.getElementById(
+        "dbaResult"
+    ).innerText =
+        result.dba || "";
+
+    // Future fields
+    const safeSet = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.innerText = value || "";
+        }
+    };
+
+    safeSet(
+        "careerPromiseResult",
+        result.career_promise
+    );
+
+    safeSet(
+        "currentOutlookResult",
+        result.current_outlook
+    );
+
+    safeSet(
+        "positiveIndicatorsResult",
+        result.positive_indicators
+    );
+
+    safeSet(
+        "challengesResult",
+        result.challenges
+    );
+
+    safeSet(
+        "outlook24MonthResult",
+        result.outlook_24_month
+    );
+}
+
+ 
+    // Initialize
+    generateNumberGrid();
+    document.getElementById("offerPrice").innerText =
+    "₹" + CONFIG.PRICE;
+
+    document.getElementById("feePrice").innerText =
+    "₹" + CONFIG.PRICE;
+
+    document.getElementById("landingBtn").innerText =
+    "GET MY CAREER ANALYSIS ₹" + CONFIG.PRICE;
+       
+  </script>
+</body>
+</html>
