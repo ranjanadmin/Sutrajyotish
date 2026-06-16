@@ -108,6 +108,31 @@ SIGN_LORD_NAME = {
 
 
 CACHE_DIR = "workspace_cache"
+# -------------------------------
+# CONSULTATION STORAGE
+# -------------------------------
+
+CONSULTATION_DIR = "consultation_data"
+
+os.makedirs(
+    CONSULTATION_DIR,
+    exist_ok=True
+)
+
+CONSULTATION_FILE = os.path.join(
+    CONSULTATION_DIR,
+    "consultations.json"
+)
+
+if not os.path.exists(
+    CONSULTATION_FILE
+):
+    with open(
+        CONSULTATION_FILE,
+        "w",
+        encoding="utf-8"
+    ) as f:
+        json.dump([], f)
 
 os.makedirs(
     CACHE_DIR,
@@ -2081,6 +2106,47 @@ def api_profession_prediction():
             vimshottari_rows,
             question_type=question_type
         )
+        
+        career_promise = (
+            "Career promise exists. "
+            "Employment and service-related matters "
+            "are strongly activated."
+        )
+
+        current_outlook = (
+            "Income generation and financial "
+            "improvement are indicated. "
+            "The native is likely to receive support "
+            "for professional growth, employment "
+            "opportunities, or career advancement."
+        )
+
+        positive_indicators = (
+            f"Career Score: {prediction.get('career_score', 0)}. "
+            f"Severity: {prediction.get('severity', 'NEUTRAL')}. "
+            f"Career Mode: {prediction.get('career_mode', 'SERVICE')}. "
+            f"Positive Factors: {prediction.get('positive_hits', 0)}."
+        )
+
+        if prediction.get("negative_hits", 0) == 0:
+
+            challenges = (
+                "No major adverse indicators are "
+                "currently visible."
+            )
+
+        else:
+
+            challenges = (
+                f"{prediction.get('negative_hits', 0)} "
+                "adverse indicators require "
+                "careful monitoring."
+            )
+
+        outlook_24_month = (
+            f"Best Window: "
+            f"{timeline.get('best_window', 'Under Analysis')}"
+        )
 
         return jsonify({
 
@@ -2098,22 +2164,10 @@ def api_profession_prediction():
                     0
                 ),
 
-            "confidence":
-                timeline.get(
-                    "confidence",
-                    "LOW"
-                ),
-
-            "best_window":
-                timeline.get(
-                    "best_window",
-                    ""
-                ),
-
-            "dba":
-                timeline.get(
-                    "dba",
-                    ""
+            "career_mode":
+                prediction.get(
+                    "career_mode",
+                    "SERVICE"
                 ),
 
             "positive_hits":
@@ -2128,6 +2182,53 @@ def api_profession_prediction():
                     0
                 ),
 
+            "status":
+                (
+                    "POSITIVE"
+                    if prediction.get(
+                        "positive_hits",
+                        0
+                    )
+                    >
+                    prediction.get(
+                        "negative_hits",
+                        0
+                    )
+                    else "MIXED"
+                ),
+
+            "income":
+                (
+                    "GAIN"
+                    if "INCOME_GAIN"
+                    in prediction.get(
+                        "events",
+                        []
+                    )
+                    else "NORMAL"
+                ),
+
+            "best_window":
+                timeline.get(
+                    "best_window",
+                    "Under Analysis"
+                ),
+
+            "career_promise":
+                career_promise,
+
+            "current_outlook":
+                current_outlook,
+
+            "positive_indicators":
+                positive_indicators,
+
+            "challenges":
+                challenges,
+
+            "outlook_24_month":
+                outlook_24_month,
+
             "summary":
                 prediction.get(
                     "prediction_summary",
@@ -2138,10 +2239,15 @@ def api_profession_prediction():
                 prediction.get(
                     "events",
                     []
+                ),
+
+            "event_descriptions":
+                prediction.get(
+                    "event_descriptions",
+                    []
                 )
 
         })
-
     except Exception as e:
 
         import traceback
@@ -2155,147 +2261,10 @@ def api_profession_prediction():
             "error": str(e)
 
         })
-# -------------------------------
-# CREATE ORDER API
-# -------------------------------
-
-@app.route(
-    "/api/create_order",
-    methods=["POST"]
-)
-def create_order():
-
-    try:
-
-        data = request.get_json()
-
-        amount = int(
-            data.get(
-                "amount",
-                99
-            )
-        )
-
-        order = razorpay_client.order.create({
-
-            "amount":
-                amount * 100,
-
-            "currency":
-                "INR",
-
-            "payment_capture":
-                1
-        })
-
-        return jsonify({
-
-            "success": True,
-
-            "order_id":
-                order["id"],
-
-            "amount":
-                order["amount"]
-
-        })
-
-    except Exception as e:
-
-        return jsonify({
-
-            "success": False,
-
-            "error":
-                str(e)
-
-        }), 500
-        
-        # -------------------------------
-# VERIFY PAYMENT API
-# -------------------------------
-
-@app.route(
-    "/api/verify_payment",
-    methods=["POST"]
-)
-def verify_payment():
-
-    try:
-
-        data = request.get_json()
-
-        order_id = data.get(
-            "razorpay_order_id"
-        )
-
-        payment_id = data.get(
-            "razorpay_payment_id"
-        )
-
-        signature = data.get(
-            "razorpay_signature"
-        )
-
-        secret = os.environ.get(
-            "RAZORPAY_KEY_SECRET"
-        )
-
-        body = (
-            f"{order_id}|{payment_id}"
-        )
-
-        generated_signature = hmac.new(
-
-            bytes(
-                secret,
-                "utf-8"
-            ),
-
-            bytes(
-                body,
-                "utf-8"
-            ),
-
-            hashlib.sha256
-
-        ).hexdigest()
-
-        if generated_signature == signature:
-
-            return jsonify({
-
-                "success": True
-
-            })
-
-        return jsonify({
-
-            "success": False
-
-        }), 400
-
-    except Exception as e:
-
-        return jsonify({
-
-            "success": False,
-
-            "error":
-                str(e)
-
-        }), 500
-# -------------------------------
-# RUN
-# -------------------------------
-
 if __name__ == "__main__":
 
     app.run(
-
         debug=True,
-
         host="0.0.0.0",
-
         port=5000
     )
