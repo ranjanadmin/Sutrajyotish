@@ -2153,7 +2153,50 @@ def api_profession_prediction():
             vimshottari_rows,
             question_type=question_type
         )
+        # --------------------------------
+        # Report Narrative
+        # --------------------------------
 
+        career_promise = (
+            "Career promise exists. "
+            "Employment and service-related matters "
+            "are strongly activated."
+        )
+
+        current_outlook = (
+            "Income generation and financial "
+            "improvement are indicated. "
+            "The native is likely to receive support "
+            "for professional growth, employment "
+            "opportunities, or career advancement."
+        )
+
+        positive_indicators = (
+           f"Professional Strength Rating: Grade {grade}/5. "
+           f"Performance Rating: {performance_rating}. "
+           f"Success Factor: {success_factor}%. "
+           f"Event Probability: {event_probability}. "
+           f"Difficulty Level: {difficulty_level}. "
+           f"Change Quality: {change_quality}."
+       )
+        if negative_hits == 0:
+
+            challenges = (
+                "No major adverse indicators are "
+                "currently visible."
+            )
+
+        else:
+
+            challenges = (
+                f"{negative_hits} adverse indicators "
+                "require careful monitoring."
+            )
+
+        outlook_24_month = (
+            f"Best Window: "
+            f"{timeline.get('best_window', 'Under Analysis')}"
+        )
         return jsonify({
 
             "success": True,
@@ -2166,6 +2209,65 @@ def api_profession_prediction():
 
             "career_score":
                 career_score,
+
+            "career_mode":
+                prediction.get(
+                    "career_mode",
+                    "SERVICE"
+                ),
+
+            "positive_hits":
+                prediction.get(
+                    "positive_hits",
+                    0
+                ),
+
+            "negative_hits":
+                prediction.get(
+                    "negative_hits",
+                    0
+                ),
+
+            "status":
+                (
+                    "POSITIVE"
+                    if prediction.get(
+                        "positive_hits",
+                        0
+                    )
+                    >
+                    prediction.get(
+                        "negative_hits",
+                        0
+                    )
+                    else "MIXED"
+                ),
+
+            "income":
+                (
+                    "GAIN"
+                    if "INCOME_GAIN"
+                    in prediction.get(
+                        "events",
+                        []
+                    )
+                    else "NORMAL"
+                ),
+
+            "career_promise":
+                career_promise,
+
+            "current_outlook":
+                current_outlook,
+
+            "positive_indicators":
+                positive_indicators,
+
+            "challenges":
+                challenges,
+
+            "outlook_24_month":
+                outlook_24_month,
 
             "success_factor":
                 success_factor,
@@ -2189,9 +2291,27 @@ def api_profession_prediction():
                 timeline.get(
                     "best_window",
                     "Under Analysis"
+                ),
+
+            "summary":
+                prediction.get(
+                    "prediction_summary",
+                    []
+                ),
+
+            "events":
+                prediction.get(
+                    "events",
+                    []
+                ),
+
+            "event_descriptions":
+                prediction.get(
+                    "event_descriptions",
+                    []
                 )
-        })
-        
+
+        })     
     except Exception as e:
 
         import traceback
