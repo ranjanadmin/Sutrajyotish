@@ -2096,21 +2096,115 @@ def api_profession_prediction():
                 round(career_score / 50)
             )
         )
+        # --------------------------------
+        # Difficulty Engine
+        # --------------------------------
 
-        negative_hits = prediction.get(
-            "negative_hits",
-            0
-        )
+        difficulty_score = 0
 
-        if negative_hits == 0:
+        for row in kp_grid:
+
+            houses = []
+
+            for field in [
+                "planet_houses",
+                "star_houses",
+                "sub_houses"
+            ]:
+
+                value = row.get(
+                    field,
+                    ""
+                )
+
+                try:
+
+                    houses.extend([
+
+                        int(x.strip())
+
+                        for x in value.split(",")
+
+                        if x.strip().isdigit()
+
+                    ])
+
+                except:
+
+                    pass
+
+            houses = list(
+                set(houses)
+            )
+
+            # Strong obstruction
+
+            if (
+
+                5 in houses
+
+                and
+
+                8 in houses
+
+                and
+
+                12 in houses
+
+            ):
+
+                difficulty_score += 3
+
+            # Moderate obstruction
+
+            elif (
+
+                (8 in houses and 12 in houses)
+
+                or
+
+                (6 in houses and 8 in houses)
+
+                or
+
+                (6 in houses and 12 in houses)
+
+            ):
+
+                difficulty_score += 2
+
+            # Mild obstruction
+
+            elif (
+
+                8 in houses
+
+                or
+
+                12 in houses
+
+            ):
+
+                difficulty_score += 1
+
+        if difficulty_score <= 2:
+
             difficulty_level = "VERY LOW"
-        elif negative_hits == 1:
+
+        elif difficulty_score <= 5:
+
             difficulty_level = "LOW"
-        elif negative_hits == 2:
+
+        elif difficulty_score <= 8:
+
             difficulty_level = "MODERATE"
-        elif negative_hits == 3:
+
+        elif difficulty_score <= 12:
+
             difficulty_level = "HIGH"
+
         else:
+
             difficulty_level = "VERY HIGH"
 
         if success_factor >= 90:
@@ -2172,13 +2266,19 @@ def api_profession_prediction():
         )
 
         positive_indicators = (
-           f"Professional Strength Rating: Grade {grade}/5. "
-           f"Performance Rating: {performance_rating}. "
-           f"Success Factor: {success_factor}%. "
-           f"Event Probability: {event_probability}. "
-           f"Difficulty Level: {difficulty_level}. "
-           f"Change Quality: {change_quality}."
-       )
+            f"Professional Strength Rating: Grade {grade}/5. "
+            f"Performance Rating: {performance_rating}. "
+            f"Success Factor: {success_factor}%. "
+            f"Event Probability: {event_probability}. "
+            f"Difficulty Level: {difficulty_level}. "
+            f"Change Quality: {change_quality}."
+        )
+
+        negative_hits = prediction.get(
+            "negative_hits",
+            0
+        )
+
         if negative_hits == 0:
 
             challenges = (
