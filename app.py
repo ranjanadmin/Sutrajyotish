@@ -2067,85 +2067,91 @@ def api_profession_prediction():
             "vimshottari_rows",
             []
         )
-
-        # --------------------------------
-        # Prediction Engine
-        # --------------------------------
-
         prediction = predict_career_horary(
             kp_grid
         )
-        # --------------------------------
-        # Question Mapping
-        # --------------------------------
 
-        question_text = (
-            question or ""
-        ).upper()
+        question_text = (question or "").upper()
 
         question_type = "PROMOTION"
 
         if "CHANGE" in question_text:
-
             question_type = "JOB_CHANGE"
 
         elif (
             "NEW JOB" in question_text
-            or
-            "EMPLOYMENT" in question_text
+            or "EMPLOYMENT" in question_text
         ):
-
             question_type = "EMPLOYMENT"
 
-        # --------------------------------
-        # Timeline Engine
-        # --------------------------------
+        career_score = prediction.get(
+            "career_score",
+            0
+        )
+
+        success_factor = min(
+            100,
+            max(
+                0,
+                round(career_score / 50)
+            )
+        )
+
+        negative_hits = prediction.get(
+            "negative_hits",
+            0
+        )
+
+        if negative_hits == 0:
+            difficulty_level = "VERY LOW"
+        elif negative_hits == 1:
+            difficulty_level = "LOW"
+        elif negative_hits == 2:
+            difficulty_level = "MODERATE"
+        elif negative_hits == 3:
+            difficulty_level = "HIGH"
+        else:
+            difficulty_level = "VERY HIGH"
+
+        if success_factor >= 90:
+            grade = 5
+            performance_rating = "OUTSTANDING"
+        elif success_factor >= 80:
+            grade = 4
+            performance_rating = "EXCEEDS EXPECTATIONS"
+        elif success_factor >= 65:
+            grade = 3
+            performance_rating = "MEETS EXPECTATIONS"
+        elif success_factor >= 50:
+            grade = 2
+            performance_rating = "NEEDS IMPROVEMENT"
+        else:
+            grade = 1
+            performance_rating = "UNFAVOURABLE"
+
+        if question_type == "JOB_CHANGE":
+            if grade >= 4:
+                change_quality = "POSITIVE_CHANGE"
+            elif grade == 3:
+                change_quality = "NEUTRAL_CHANGE"
+            else:
+                change_quality = "NEGATIVE_CHANGE"
+        else:
+            change_quality = "NOT_APPLICABLE"
+
+        if success_factor >= 85:
+            event_probability = "VERY HIGH"
+        elif success_factor >= 70:
+            event_probability = "HIGH"
+        elif success_factor >= 55:
+            event_probability = "MODERATE"
+        else:
+            event_probability = "LOW"
 
         timeline = build_24_month_timeline(
             kp_grid,
             vimshottari_rows,
             question_type=question_type
-        )
-        
-        career_promise = (
-            "Career promise exists. "
-            "Employment and service-related matters "
-            "are strongly activated."
-        )
-
-        current_outlook = (
-            "Income generation and financial "
-            "improvement are indicated. "
-            "The native is likely to receive support "
-            "for professional growth, employment "
-            "opportunities, or career advancement."
-        )
-
-        positive_indicators = (
-            f"Career Score: {prediction.get('career_score', 0)}. "
-            f"Severity: {prediction.get('severity', 'NEUTRAL')}. "
-            f"Career Mode: {prediction.get('career_mode', 'SERVICE')}. "
-            f"Positive Factors: {prediction.get('positive_hits', 0)}."
-        )
-
-        if prediction.get("negative_hits", 0) == 0:
-
-            challenges = (
-                "No major adverse indicators are "
-                "currently visible."
-            )
-
-        else:
-
-            challenges = (
-                f"{prediction.get('negative_hits', 0)} "
-                "adverse indicators require "
-                "careful monitoring."
-            )
-
-        outlook_24_month = (
-            f"Best Window: "
-            f"{timeline.get('best_window', 'Under Analysis')}"
         )
 
         return jsonify({
@@ -2159,95 +2165,33 @@ def api_profession_prediction():
                 ),
 
             "career_score":
-                prediction.get(
-                    "career_score",
-                    0
-                ),
+                career_score,
 
-            "career_mode":
-                prediction.get(
-                    "career_mode",
-                    "SERVICE"
-                ),
+            "success_factor":
+                success_factor,
 
-            "positive_hits":
-                prediction.get(
-                    "positive_hits",
-                    0
-                ),
+            "difficulty_level":
+                difficulty_level,
 
-            "negative_hits":
-                prediction.get(
-                    "negative_hits",
-                    0
-                ),
+            "grade":
+                grade,
 
-            "status":
-                (
-                    "POSITIVE"
-                    if prediction.get(
-                        "positive_hits",
-                        0
-                    )
-                    >
-                    prediction.get(
-                        "negative_hits",
-                        0
-                    )
-                    else "MIXED"
-                ),
+            "performance_rating":
+                performance_rating,
 
-            "income":
-                (
-                    "GAIN"
-                    if "INCOME_GAIN"
-                    in prediction.get(
-                        "events",
-                        []
-                    )
-                    else "NORMAL"
-                ),
+            "change_quality":
+                change_quality,
+
+            "event_probability":
+                event_probability,
 
             "best_window":
                 timeline.get(
                     "best_window",
                     "Under Analysis"
-                ),
-
-            "career_promise":
-                career_promise,
-
-            "current_outlook":
-                current_outlook,
-
-            "positive_indicators":
-                positive_indicators,
-
-            "challenges":
-                challenges,
-
-            "outlook_24_month":
-                outlook_24_month,
-
-            "summary":
-                prediction.get(
-                    "prediction_summary",
-                    []
-                ),
-
-            "events":
-                prediction.get(
-                    "events",
-                    []
-                ),
-
-            "event_descriptions":
-                prediction.get(
-                    "event_descriptions",
-                    []
                 )
-
         })
+        
     except Exception as e:
 
         import traceback
@@ -2267,4 +2211,5 @@ if __name__ == "__main__":
         debug=True,
         host="0.0.0.0",
         port=5000
-    )
+    )        
+
